@@ -1,7 +1,6 @@
 #### Dependencies ####
 library(metafor) # perform meta-analysis
 library(forestplot) # forestplots
-library(tidyverse)
 library(dplyr)
 library(ggpubr)
 library(data.table)
@@ -9,7 +8,8 @@ library(stringr)
 library(readr)
 library(RColorBrewer)
 source("Function_Social.R")
-studies <- read.csv("All_Studies.csv",colClasses ="character")
+studies <- read.csv("data/DataS2.csv",colClasses ="character") %>%
+  rename("ID" = "ï..ID")
 studies <- studies[studies$mechanism!="pH",]
 MAdata <- studies[studies$outMA=="in",]
 MAdata$ei <- as.numeric(MAdata$ei)
@@ -48,18 +48,15 @@ for (k in levels(as.factor(studies$indicator))){
   i <- i+1
 }
 
-#table linking mechanisms and indicators
-studies <- data.table(studies) 
-votes$indicator <- as.factor(trimws(votes$indicator))
-mechanism_indicator <- studies[,.(.N), by=.(indicator,mechanism,socioeco)] 
-
-#### Repartition of ecological studies among taxon #### 
+#### Repartition of ecological studies among taxon ####
 par(mfrow=c(2,1),mar=c(2,2,1,1))
 #non "recovery" or "resistance" studies (almost no corals)
 taxon <- studies[!is.na(studies$taxon),]
-taxon <- taxon[taxon$mechanism=="biodiversity" | taxon$mechanism=="reproduction"
-               | taxon$mechanism=="body condition" | taxon$mechanism=="genetic"
-               | taxon$mechanism=="stability" | taxon$mechanism=="body condition",]
+taxon <- taxon %>%
+  dplyr::filter(
+    mechanism %in% c("biodiversity", "reproduction", "body condition", "genetic", "stability")
+  )
+
 general_moderator(taxon,"taxon","no")
 all_taxon <- graph_indicator
 #"recovery" or "resistance" studies (mostly corals)
@@ -67,13 +64,14 @@ taxon_recov <- studies[!is.na(studies$taxon),]
 taxon_recov <- taxon_recov[taxon_recov$mechanism=="recovery" | taxon_recov$mechanism=="resistance",]
 general_moderator(taxon_recov,"taxon")
 recov_taxon <- graph_indicator
-#taxon in positive direction lines 
+#taxon in positive direction lines
 taxon_pos <- studies[!is.na(studies$taxon) & studies$direction=="positive",]
 taxon_pos <- taxon_pos[taxon_pos$mechanism=="biodiversity" | taxon_pos$mechanism=="reproduction"
                | taxon_pos$mechanism=="body condition" | taxon_pos$mechanism=="genetic"
                | taxon_pos$mechanism=="stability" | taxon_pos$mechanism=="body condition"
                |taxon_pos$mechanism=="recovery" | taxon_pos$mechanism=="resistance",]
 general_moderator(taxon_pos,"taxon")
+pos_taxon <- graph_indicator
 
 taxon_neg <- studies[!is.na(studies$taxon) & (studies$direction=="negative"|studies$direction=="neutral"),]
 taxon_neg <- taxon_neg[taxon_neg$mechanism=="biodiversity" | taxon_neg$mechanism=="reproduction"
@@ -86,14 +84,14 @@ figure_taxon <- ggarrange(all_taxon,recov_taxon,pos_taxon,
                                ncol=3, nrow=1)
 figure_taxon
 
-#### Spatial repartition of studies #### 
+#### Spatial repartition of studies ####
 studies_loc <- studies[studies$continent!="mix",] #across all studies
 general_moderator(studies_loc,"continent","yes")
 
 studies_loc <- studies[studies$socioeco=="ecological" & studies$continent!="mix",]
 general_moderator(studies_loc,"continent","yes")
 eco_loc <- graph_indicator
-  
+
 studies_loc <- studies[studies$socioeco=="social"& studies$continent!="mix",]
 general_moderator(studies_loc,"continent","yes")
 socio_loc <- graph_indicator
@@ -106,10 +104,11 @@ figure_loc <- ggarrange(eco_loc,socio_loc,mitigation_loc,
                           ncol=3, nrow=1)
 figure_loc
 
-#### Vote counting results for all mechanisms, all indicators #### 
+#### Vote counting results for all mechanisms, all indicators ####
 votes <- studies
 votes$mechanism <- as.factor(trimws(votes$mechanism))
 votes$direction <- as.factor(trimws(votes$direction))
+votes$indicator <- as.factor(trimws(votes$indicator))
 votes <- data.table(votes)
 mechanisms <- as.data.frame(table(votes$mechanism))
 colnames(mechanisms) <- c("mechanism","N")
@@ -128,15 +127,16 @@ for (k in levels(directions$mechanism)){
   directions$proportion[directions$mechanism==k] <- round(directions$N[directions$mechanism==k] /
                                                             mechanisms[mechanisms$mechanism==k,"N"]*100,0)
   directions$direction <- factor(directions$direction,levels=c("positive", "neutral", "ambiguous","negative"))
-  directions <- directions[order(mechanism,direction),]}
+  directions <- directions[order(mechanism,direction),]
+}
 print("directions of data points by mechanism")
 print(directions)
-  
-graph_indicator <- ggplot(directions, aes(fill=direction, y=N, x=mechanism)) + 
+
+graph_indicator <- ggplot(directions, aes(fill=direction, y=N, x=mechanism)) +
     geom_bar(position="stack", stat="identity")+
     scale_fill_manual(values=c("darkolivegreen2","cornsilk2","coral","brown3"))+
     theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
-    geom_text(aes(label=proportion), position=position_stack(vjust=0.5))+
+    geom_text(aes(label=N), position=position_stack(vjust=0.5))+
     labs(x="vote counting results per mechanism")+
   coord_flip()
 print(graph_indicator)
@@ -158,26 +158,31 @@ for (k in levels(direction$indicator)){
 direction <- direction[order(mechanism,indicator),]
 direction$direction <- factor(direction$direction,levels=c("positive", "neutral", "ambiguous","negative"))
 direction$indicator <- as.factor(direction$indicator)
-direction$indicator <- factor(direction$indicator,
-                              levels=mechanism_indicator$indicator[order(mechanism_indicator$socioeco,mechanism_indicator$mechanism)])
 
+studies_dt <- data.table(studies)
+mechanism_indicator <- studies_dt[,.(.N), by=.(indicator,mechanism)]
+direction$indicator <- factor(
+  direction$indicator,
+  levels=mechanism_indicator$indicator[order(
+    mechanism_indicator$mechanism
+  )]
+)
 
-
-graph_indicator <- ggplot(direction, aes(fill=direction, y=N, x=indicator)) + 
+graph_indicator <- ggplot(direction, aes(fill=direction, y=N, x=indicator)) +
   geom_bar(position="stack", stat="identity")+
   scale_fill_manual(values=c("darkolivegreen2","cornsilk2","coral","brown3"))+
   theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
-  geom_text(aes(label=proportion), position=position_stack(vjust=0.5), size=2)+
+  geom_text(aes(label=N), position=position_stack(vjust=0.5), size=2)+
   labs(x="directions by indicator")+
   coord_flip()
 print(graph_indicator)
 
 
-#### Vote counting results for all mechanisms, selecting only some indicators #### 
-# only keeps indicators user rights and participation for agency 
+#### Vote counting results for all mechanisms, selecting only some indicators ####
+# only keeps indicators user rights and participation for agency
 votes_selected <- studies[studies$indicator!="consultation" & studies$indicator!="decision making" &
                    studies$indicator!="governance",]
-# only keeps education and environmental awareness for information 
+# only keeps education and environmental awareness for information
 votes_selected <- votes_selected[votes_selected$indicator!="MPA knowledge" &
                             votes_selected$indicator!="research programs",]
 # only keeps cpue and local food security for food security
@@ -222,9 +227,9 @@ mechanism_order=rev(c("pH", "Cseq","allelic richness",
                       "wave attenuation","accretion","stability","costs","income", "participation",
                       "user rights","alternative livelihoods","cpue","local food security","environmental awareness",
                       "education","cohesion","conflict"))
-directions$indicator <- factor(directions$indicator,levels=indicator_order)
+directions$indicator <- factor(directions$indicator,levels=mechanism_order)
 
-graph_indicator <- ggplot(directions, aes(fill=direction, y=N, x=mechanism)) + 
+graph_indicator <- ggplot(directions, aes(fill=direction, y=N, x=mechanism)) +
   geom_bar(position="stack", stat="identity")+
   scale_fill_manual(values=c("darkolivegreen2","cornsilk2","coral","brown3"))+
   theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
@@ -254,7 +259,7 @@ indicator_order=rev(c("pH", "Cseq","allelic richness",
                       "education","cohesion","conflict"))
 directions$indicator <- factor(directions$indicator,levels=indicator_order)
 
-graph_indicator <- ggplot(directions, aes(fill=direction, y=N, x=indicator)) + 
+graph_indicator <- ggplot(directions, aes(fill=direction, y=N, x=indicator)) +
   geom_bar(position="stack", stat="identity")+
   scale_fill_manual(values=c("darkolivegreen2","cornsilk2","coral","brown3"))+
   theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
@@ -266,8 +271,8 @@ print(graph_indicator)
 
 
 
-#### Creating the data table with all effect size #### 
-## adding C sequestration values 
+#### Creating the data table with all effect size ####
+## adding C sequestration values
 # BC ecosystems
 CseqBC <- MAdata[MAdata$mechanism=="Csequestration" & MAdata$ecosystem!="sediment",]
 MA <- rma(yi=ei, vi=vei, data=CseqBC)
@@ -310,7 +315,7 @@ forest=forest(MA, slab = paste(Indicator$ID, Indicator$Authors),
 print(forest)
 }
 
-## Adding boot strapping values 
+## Adding boot strapping values
 # allelic richness
 AR <- MAdata[MAdata$indicator=="allelic richness",]
 bootstrapping(AR,1000,"allelic richness")
@@ -323,7 +328,7 @@ bootstrapping(var,1000,"stability")
 varlist <- list("stability",values[[1]],values[[2]],values[[3]],nrow(var))
 ei_table <- rbind(ei_table,varlist)
 
-#### graph with ei #### 
+#### graph with ei ####
 ei_graph <- ei_table[ei_table$indicator!="accretion",]
 base=6 # height of figure
 expand=2 # font size increase
@@ -370,12 +375,12 @@ forestplot(table_resilience$mechanism,
 
 
 
-#### synthetic flower plot V1#### 
+#### synthetic flower plot V1####
 ## adding values of vote counting to ei_table
 
-# RUN: all file, and then again "vote counting for all mechanisms, selecting only 
-# some indicators. 
-flower_table <- ei_table 
+# RUN: all file, and then again "vote counting for all mechanisms, selecting only
+# some indicators.
+flower_table <- ei_table
 flower_table$MA <- rep("yes",nrow(flower_table))
 flower_table <- rbind(flower_table,list("acidity buffer",0,0,0,0,"no")) #acidity buffering
 flower_table <- rbind(flower_table,list("phenotypic plasticity",0,0,0,0,"no")) #phenotypic plasticity
@@ -383,7 +388,7 @@ flower_table <- rbind(flower_table,list("connectivity",0,0,0,0,"no")) #connectiv
 
 for (k in c("body condition","agency","flexibility","learning","social organization")){
 proportion <- as.numeric(directions[directions$mechanism==k &
-                           directions$direction=="positive","proportion"])
+                           directions$direction=="positive","proportion"]$proportion[1])
 sample <- as.numeric(table_nbstudies[table_nbstudies$mechanism==k,"votes"])
 flower_table <- rbind(flower_table,list(k,proportion, proportion,proportion,sample,"no"))
 }
@@ -391,9 +396,9 @@ flower_table <- rbind(flower_table,list(k,proportion, proportion,proportion,samp
 flower_final <- flower_table[,-3]
 flower_final <- flower_final[,-3]
 flower_final$magnitude <- flower_final$ei
-flower_final[flower_final$MA=="yes" & flower_final$ei>1,]$magnitude <- 1 
+flower_final[flower_final$MA=="yes" & flower_final$ei>1,]$magnitude <- 1
 #flower_final[flower_final$MA=="yes" & flower_final$ei<0,]$magnitude <- 0
-flower_final[flower_final$MA=="no",]$magnitude <- 
+flower_final[flower_final$MA=="no",]$magnitude <-
   flower_final[flower_final$MA=="no",]$ei/100
 flower_final$category <- c(rep("mitigation",3),rep("ecological",2),rep("social",2),rep("ecological",5), "mitigation",rep("ecological",3),rep("social",4))
 flower_final <- flower_final[order(flower_final$category),]
@@ -414,7 +419,7 @@ flower_final$left <- flower_final$right - 1
 flower_final$id <- 1:nrow(flower_final)
 
 # Get the name and the y position of each label
-label_data =data_frame(category=flower_final$indicator) 
+label_data =data_frame(category=flower_final$indicator)
 number_of_bar <- nrow(flower_final) #nb of categories
 angle <- 90 - 360 * (flower_final$id-0.5) /number_of_bar     # I substract 0.5 because the letter must have the angle of the center of the bars. Not extreme right(1) or extreme left (0)
 label_data$hjust <- ifelse( angle < -90, 1, 0)
@@ -422,7 +427,7 @@ label_data$angle <- ifelse(angle < -90, angle+180, angle)
 label_data$tot=flower_final$magnitude
 label_data$id=flower_final$id
 
-p <- ggplot(flower_final) +      
+p <- ggplot(flower_final) +
   #Add circle line to delimitate the border of the figure.
   geom_segment(aes(x = 11.1, y = 1.1, xend = 15,
                    yend =1.1), colour = "blue",
@@ -453,14 +458,14 @@ p <- ggplot(flower_final) +
   coord_polar()
 p
 
-#### synthetic flower plot V2 #### 
+#### synthetic flower plot V2 ####
 # sample size of vote counting
 flower_v2 <- table_nbstudies
 flower_v2 <- flower_v2[flower_v2$mechanism!="resistance" & flower_v2$mechanism!="recovery",]
 flower_v2$ei <-c(0,ei_table[ei_table$indicator=="income","ei"],ei_table[ei_table$indicator=="species richness","ei"],
                  0,1,ei_table[ei_table$indicator=="CseqBC","ei"],
                  0,ei_table[ei_table$indicator=="cpue","ei"],ei_table[ei_table$indicator=="allelic richness","ei"],
-                 0,ei_table[ei_table$indicator=="reproductive potential","ei"],0, ei_table[ei_table$indicator=="stability","ei"]) 
+                 0,ei_table[ei_table$indicator=="reproductive potential","ei"],0, ei_table[ei_table$indicator=="stability","ei"])
 flower_v2$direction <- c("positive")
 flower_v2$direction[c(4,9,13)] <- c("neutral")
 flower_v2$direction[12] <- c("negative")
@@ -481,7 +486,7 @@ flower_v2$left <- 1:nrow(flower_v2)
 flower_v2$id <- 1:nrow(flower_v2)
 
 # Get the name and the y position of each label
-label_data =data_frame(category=flower_v2$mechanism) 
+label_data =data_frame(category=flower_v2$mechanism)
 number_of_bar <- nrow(flower_v2) #nb of categories
 angle <- 90 - 360 * (flower_v2$id-0.5) /number_of_bar     # I substract 0.5 because the letter must have the angle of the center of the bars. Not extreme right(1) or extreme left (0)
 label_data$hjust <- ifelse( angle < -90, 1, 0)
@@ -489,7 +494,7 @@ label_data$angle <- ifelse(angle < -90, angle+180, angle)
 label_data$tot=flower_v2$magnitude
 label_data$id=flower_v2$id
 
-p <- ggplot(flower_v2) +      
+p <- ggplot(flower_v2) +
   #Add circle line to delimitate the border of the figure.
   geom_segment(aes(x = 1.1, y = 22, xend = 8.9,
                    yend =22), colour = "darkolivegreen4",
@@ -521,24 +526,24 @@ p <- ggplot(flower_v2) +
 p
 #### expected resilience ####
 resilience <- ei_table[ei_table$indicator=="species richness" |
-                         ei_table$indicator=="shannon" | 
-                         ei_table$indicator=="recruitment"| 
+                         ei_table$indicator=="shannon" |
+                         ei_table$indicator=="recruitment"|
                          ei_table$indicator=="reproductive potential" |
                          ei_table$indicator=="allelic richness" |
                          ei_table$indicator=="stability",]
-resilience1 <- resilience[resilience$indicator!="shannon" & 
+resilience1 <- resilience[resilience$indicator!="shannon" &
                             resilience$indicator!="recruitment",]
-list_resilience <- tibble(ei=mean(resilience1$ei), CI=sd(resilience1$ei)*2/1.96) 
+list_resilience <- tibble(ei=mean(resilience1$ei), CI=sd(resilience1$ei)*2/1.96)
 
-resilience2 <- resilience[resilience$indicator!="shannon" & 
+resilience2 <- resilience[resilience$indicator!="shannon" &
                             resilience$indicator!="reproductive potential",]
-list_resilience <- rbind(list_resilience, list(mean(resilience2$ei), sd(resilience2$ei)*2/1.96)) 
+list_resilience <- rbind(list_resilience, list(mean(resilience2$ei), sd(resilience2$ei)*2/1.96))
 
-resilience3 <- resilience[resilience$indicator!="species richness" & 
+resilience3 <- resilience[resilience$indicator!="species richness" &
                             resilience$indicator!="reproductive potential",]
 list_resilience <- rbind(list_resilience,list(mean(resilience3$ei), sd(resilience3$ei)*2/1.96))
 
-resilience4 <- resilience[resilience$indicator!="species richness" & 
+resilience4 <- resilience[resilience$indicator!="species richness" &
                             resilience$indicator!="recruitment",]
 list_resilience <- rbind(list_resilience,list(mean(resilience4$ei), sd(resilience4$ei)*2/1.96))
 
