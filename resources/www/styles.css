@@ -1,0 +1,71 @@
+/* Leaflet */
+/* Maps */
+.leaflet-popup-content {
+  width: max-content !important;
+}
+
+/* Popup */
+.popup-title {
+  margin: 0px;
+}
+
+.flag {
+  width: 40px;
+  margin-right: 5px;
+  vertical-align: text-top;
+}
+
+.grid-four {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+}
+
+.info-div {
+  margin: 3px 0px 3px 15px;
+}
+
+.info-title {
+  color: #a5a5a5;
+  margin: 0px;
+  font-size: small;
+  line-height: 15px;
+}
+
+.info-content {
+  color: #3e3e3e;
+  margin: 0px;
+  font-size: medium;
+  line-height: 15px;
+}
+
+.mechanism-div {
+  padding: 5px 10px;
+  height: 50px;
+  border-radius: 15px;
+}
+
+.mechanism-title {
+  display: inline;
+  line-height: 40px;
+  margin-left: 10%;
+  color: white;
+}
+
+.mechanism-icon {
+  width: 40px;
+  float: right;
+  margin-right: 10%;
+  filter: invert(1);
+}
+
+.direction-div {
+  text-align: center;
+}
+
+.direction-icon {
+  width: 70px;
+}
+
+.direction-number {
+  font-size:; 15px;
+}
