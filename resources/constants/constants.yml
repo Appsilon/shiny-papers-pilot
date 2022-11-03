@@ -1,0 +1,78 @@
+directions:
+  ambiguous:
+    color: '#FFFFFF'
+    icon: 'https://i.ibb.co/7WXs1wm/ambiguous.png'
+  negative:
+    color: '#FFFFFF'
+    icon: 'https://i.ibb.co/N7HFXrH/negative.png'
+  neutral:
+    color: '#FFFFFF'
+    icon: 'https://i.ibb.co/jMy9LKs/neutral.png'
+  positive:
+    color: '#FFFFFF'
+    icon: 'https://i.ibb.co/Y2h1Jq5/positive.png'
+pathways:
+  carbon_sequestration:
+    color: '#3b4495'
+    icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
+    label: 'Carbon Sequestration'
+  acidity_buffering:
+    color: '#769ec1'
+    icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
+    label: 'Acidity Buffering'
+  phenotypic_plasticity:
+    color: '#74b46a'
+    icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
+    label: 'Phenotypic Plasticity'
+  connectivity:
+    color: '#649b5d'
+    icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
+    label: 'Connectivity'
+  stability:
+    color: '#5c8e57'
+    icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
+    label: 'Stability'
+  biodiversity:
+    color: '#52814f'
+    icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
+    label: 'Biodiversity'
+  genetic_diversity:
+    color: '#487646'
+    icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
+    label: 'Genetic'
+  body_condition:
+    color: '#416940'
+    icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
+    label: 'Body Condition'
+  reproduction:
+    color: '#375b35'
+    icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
+    label: 'Reproduction'
+  coastal_protection:
+    color: '#2e4d2e'
+    icon: 'https://cdn-i^cons-png.flaticon.com/512/3740/3740331.png'
+    label: 'Coastal Protection'
+  assets:
+    color: '#b9752d'
+    icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
+    label: 'Assets'
+  flexibility:
+    color: '#c2832b'
+    icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
+    label: 'Flexibility'
+  social_organization:
+    color: '#cb9531'
+    icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
+    label: 'Social Organization'
+  learning:
+    color: '#d3a52f'
+    icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
+    label: 'Learning'
+  agency:
+    color: '#d9af32'
+    icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
+    label: 'Agency'
+  food_security:
+    color: '#dfc03b'
+    icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
+    label: 'Food Security'
