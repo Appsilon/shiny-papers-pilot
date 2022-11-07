@@ -2,8 +2,9 @@
 box::use(
   glue[...],
   htmltools[...],
+  shiny[...],
   stringr[...],
-  yaml[...]
+  yaml[...],
 )
 
 #' @title
@@ -104,6 +105,87 @@ create_tooltip <- function(
     )
 
   return(tooltip_html)
+}
+
+#' @title
+#' @description
+#'
+#' @param glide_id
+#' @param element_id
+#' @param mechanism
+#' @param color
+#' @param icon
+#' @param width
+#' @param height
+#'
+#' @export
+mechanism_card <- function(glide_id, element_id, mechanism, color, icon, width = "100px", height = "85px") {
+  mechanism <- toupper(x = mechanism)
+
+  out <- tags$a(
+    class = 'pathway-card',
+    style = glue('background: {color}; width: {width}; height: {height}'),
+    onclick = glue("glide_selected('{element_id}', '{glide_id}')"),
+    tags$img(
+      src = icon,
+      class = 'pathway-icon'
+    ),
+    tags$p(
+      class = 'pathway-title',
+      mechanism
+    )
+  )
+
+  return(out)
+}
+
+#' @title
+#' @description
+#'
+#' @param dir < or >
+#' @param float left or right
+#'
+#' @export
+arrow_btn <- function(dir = "<", float = "left") {
+  html_code <- tags$div(
+    `class` = "glide__arrows",
+    `data-glide-el` = "controls",
+    tags$button(
+      `class` = "glide__arrow glide__arrow--left glide-control",
+      `data-glide-dir` = dir,
+      style = glue("float: {float}"),
+      dir
+    )
+  )
+
+  return(html_code)
+}
+
+#' @title
+#' @description
+#'
+#' @param content
+#'
+#' @export
+glide <- function(content) {
+  html_code <- tags$div(
+    class = "glide pathway-grid",
+    tags$div(
+      class = "glide-container",
+      arrow_btn(dir = "<", float = "left"),
+      tags$div(
+        `class` = "glide__track",
+        `data-glide-el` = "track",
+        tags$ul(
+          class = "glide__slides",
+          content
+        )
+      ),
+      arrow_btn(dir = ">", float = "right")
+    )
+  )
+
+  return(html_code)
 }
 
 #' @title
