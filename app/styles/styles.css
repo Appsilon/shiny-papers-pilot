@@ -180,11 +180,13 @@
 /* absolute panel */
 #controls {
   background-color: white;
-  padding: 0 20px 20px 20px;
+  margin: 10px auto;
+  padding: 20px;
   cursor: move;
   opacity: 0.65;
   zoom: 0.9;
   transition: opacity 500ms 1s;
+  border-radius: 15px;
 }
 
 #controls:hover {

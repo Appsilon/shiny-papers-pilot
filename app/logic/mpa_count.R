@@ -51,12 +51,14 @@ ui <- function(id, consts) {
     class = "panel panel-default",
     fixed = TRUE,
     draggable = TRUE,
-    top = 60,
-    left = "auto",
-    right = 20,
-    bottom = "auto",
-    width = 330,
-    height = "auto",
+
+    top = "auto",
+    bottom = 10,
+    left = 0,
+    right = 0,
+
+    width = "fit-content",
+    height = "fit-content",
 
     tags$h2("Vote-counting"),
 
@@ -74,8 +76,7 @@ ui <- function(id, consts) {
       ),
 
       tags$div(
-        style = "border: 3px gray solid; border-radius: 5px",
-        plotlyOutput(outputId = vote_plot_id, height = "150px")
+        plotlyOutput(outputId = vote_plot_id, height = "150px", width = "40vw")
       )
     )
   )
@@ -92,7 +93,7 @@ server <- function(id, consts) {
     output[[plot_id]] <- renderPlotly({
       first_frame <- isolate(frame_n())
 
-      plot_ly(source = vote_plot_id) %>%
+      plot_ly(source = plot_id) %>%
         add_trace(
           x = rep(consts$votes$init, 3), y = rep(0, 3), frame = first_frame,
           type = "scatter",
@@ -130,7 +131,7 @@ server <- function(id, consts) {
     vote_plot_event <- reactive(
       event_data(
         event = "plotly_click",
-        source = vote_plot_id
+        source = plot_id
       )
     )
     observeEvent(vote_plot_event(), {
