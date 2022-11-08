@@ -2,13 +2,13 @@
 library(dplyr)
 library(stringr)
 
-source("R/utils.R")
+source("app/logic/utils/utils.R")
 
 # get the data
 # TODO: my guess is that we have a different file with more complete info:
 # all_studies.csv
-constants <- read_yaml(file = "constants/constants.yml")
-studies <- read.csv("data/originals/data_s2.csv", colClasses = "character")
+constants <- read_yaml(file = "app/static/constants/constants.yml")
+studies <- read.csv("app/static/data/originals/data_s2.csv", colClasses = "character")
 mechanisms <- sapply(X = constants$pathways, FUN = "[[", "label")
 mechanisms_df <- data.frame(
   mechanism = mechanisms,
@@ -68,4 +68,4 @@ studies <- studies %>%
 # But there are 2 mechanism in the data that are absent in the paper: "Recovery" and "Resistance".
 
 # save data
-saveRDS(object = studies, file = "data/preprocessing/studies.RDS")
+saveRDS(object = studies, file = "app/static/data/preprocessing/studies.RDS")
