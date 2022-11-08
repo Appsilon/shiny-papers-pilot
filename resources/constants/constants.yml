@@ -15,11 +15,11 @@ pathways:
   carbon_sequestration:
     color: '#3b4495'
     icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
-    label: 'Carbon Sequestration'
+    label: 'Csequestration'
   acidity_buffering:
     color: '#769ec1'
     icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
-    label: 'Acidity Buffering'
+    label: 'Ph'
   phenotypic_plasticity:
     color: '#74b46a'
     icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
@@ -76,3 +76,7 @@ pathways:
     color: '#dfc03b'
     icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
     label: 'Food Security'
+votes:
+  min: -1
+  max: 1
+  init: 0

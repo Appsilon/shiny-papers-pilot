@@ -9,7 +9,6 @@ source("R/utils.R")
 # all_studies.csv
 constants <- read_yaml(file = "constants/constants.yml")
 studies <- read.csv("data/originals/data_s2.csv", colClasses = "character")
-
 mechanisms <- sapply(X = constants$pathways, FUN = "[[", "label")
 mechanisms_df <- data.frame(
   mechanism = mechanisms,
@@ -17,6 +16,8 @@ mechanisms_df <- data.frame(
 )
 
 # summarize important variables
+# TODO: check what "mix" means for MPAname...are these studies spanning several MPAs? If so, do we know which MPAs?
+# For now, we might go by assuming that each study is about 1 MPA only.
 studies <- studies %>%
   filter(!is.na(MPAname) & MPAname != "mix" & MPAname != "") %>%
   mutate(
@@ -62,6 +63,9 @@ studies <- studies %>%
   left_join(y = mechanisms_df, by = "mechanism") %>%
   rename(name = MPAname) %>%
   filter(!is.na(mechanism_internal))
+
+# TODO: It seems that "Phenotypic plasticity" and "Connectivity" mechanisms are not on the data
+# But there are 2 mechanism in the data that are absent in the paper: "Recovery" and "Resistance".
 
 # save data
 saveRDS(object = studies, file = "data/preprocessing/studies.RDS")
