@@ -2,57 +2,42 @@
 box::use(
   shiny[
     fluidPage,
-    HTML,
-    includeCSS,
-    includeScript,
-    renderText,
-    shinyApp,
-    tags,
-    textOutput,
+    moduleServer,
+    NS,
+    observeEvent,
   ],
-  yaml[read_yaml]
 )
 
 box::use(
-  utils = ./utils,
+  utils = ./utils/utils,
 )
 
-# get the data
-constants <- read_yaml(file = "constants/constants.yml")
-studies <- readRDS(file = "data/preprocessing/studies.RDS")
+#' @export
+ui <- function(id, consts) {
+  # namespace
+  ns <- NS(id)
 
-# simple shiny app to validate the ideas. we will exclude it later
-mecanisms <- lapply(X = constants$pathways, FUN = function(x) {
-  utils$mechanism_card(
-    glide_id = 'glide',
-    element_id = x$id,
-    mechanism = x$label,
-    color = x$color,
-    icon = x$icon
-  )
-})
-
-ui <- fluidPage(
-  # glidejs
-  tags$link(rel = "stylesheet", href = "https://cdnjs.cloudflare.com/ajax/libs/Glide.js/3.0.2/css/glide.core.css"),
-  tags$script(src = "https://cdn.jsdelivr.net/npm/@glidejs/glide"),
-
-  # personal css
-  includeCSS(path = "www/styles.css"),
-  includeScript(path = "www/utils.js"),
+  # simple shiny app to validate the ideas. we will exclude it later
+  mecanisms <- lapply(X = consts$pathways, FUN = function(x) {
+    utils$mechanism_card(
+      glide_id = ns('glide'),
+      element_id = x$id,
+      mechanism = x$label,
+      color = x$color,
+      icon = x$icon
+    )
+  })
 
   # ui
-  utils$glide(content = mecanisms),
-  textOutput(outputId = "text")
-)
+  utils$glide(content = mecanisms)
+}
 
-
-server <- function(input, output) {
-  observeEvent(input$glide, {
-    output$text <- renderText({
-      input$glide
+#' @export
+server <- function(id) {
+  moduleServer(id, function(input, output, session) {
+    # update selected pathway
+    observeEvent(input$glide, {
+      session$userData$pathway(input$glide)
     })
   })
 }
-
-shinyApp(ui = ui, server = server)
