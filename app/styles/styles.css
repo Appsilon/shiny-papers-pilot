@@ -1,3 +1,9 @@
+/* Shiny */
+.container-fluid {
+  padding: 0px;
+  margin: 0px;
+}
+
 /* Leaflet */
 /* Maps */
 .leaflet-popup-content {
@@ -72,6 +78,10 @@
 
 /* Cards */
 .pathway-grid {
+  z-index: 1;
+  position: absolute;
+  left: 0;
+  right: 0;
   width: 60%;
   margin: 10px auto;
   background-color: #efefef73;
