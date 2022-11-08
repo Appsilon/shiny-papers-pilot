@@ -17,7 +17,7 @@ box::use(
 )
 
 box::use(
-  map = logic/mpa_map,
+  map = logic/map,
   pathways = logic/pathways_cards,
   utils_data = logic/utils/utils_data,
 )
