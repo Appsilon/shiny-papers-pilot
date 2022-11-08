@@ -49,5 +49,5 @@ po/*~
 rsconnect/
 
 # Other files
-resources/data/shp
-resources/data/preprocessing
+app/static/data/shp
+app/static/data/preprocessing
