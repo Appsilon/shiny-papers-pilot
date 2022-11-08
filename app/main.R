@@ -33,7 +33,10 @@ ui <- function(id) {
   # ui
   fluidPage(
     # glidejs
-    tags$link(rel = "stylesheet", href = "https://cdnjs.cloudflare.com/ajax/libs/Glide.js/3.0.2/css/glide.core.css"),
+    tags$link(
+      rel = "stylesheet",
+      href = "https://cdnjs.cloudflare.com/ajax/libs/Glide.js/3.0.2/css/glide.core.css"
+    ),
     tags$script(src = "https://cdn.jsdelivr.net/npm/@glidejs/glide"),
 
     # personal css

@@ -67,7 +67,7 @@ server <- function(id, mpas, shp, consts) {
             climate = climate,
             ecosystem = ecosystem
           ),
-          prop = n_positive/(n_studies - n_ambiguous)
+          prop = n_positive / (n_studies - n_ambiguous)
         )
 
       # draw the map

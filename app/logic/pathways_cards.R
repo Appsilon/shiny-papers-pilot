@@ -20,7 +20,7 @@ ui <- function(id, consts) {
   # simple shiny app to validate the ideas. we will exclude it later
   mecanisms <- lapply(X = consts$pathways, FUN = function(x) {
     utils$mechanism_card(
-      glide_id = ns('glide'),
+      glide_id = ns("glide"),
       element_id = x$id,
       mechanism = x$label,
       color = x$color,

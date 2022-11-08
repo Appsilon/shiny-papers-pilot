@@ -7,22 +7,25 @@ source("utils.R")
 ui <- fluidPage(
   useShinyjs(),
   extendShinyjs(
-    text = "shinyjs.resetClick = function() { Shiny.onInputChange('.clientValue-plotly_click-vote_plot', 'null'); }",
+    text = "shinyjs.resetClick = function() {
+      Shiny.onInputChange('.clientValue-plotly_click-vote_plot', 'null');
+    }",
     functions = c("resetClick")
     ),
-  # TODO: this input is a simplification of incoming vote data. We will not use a widget just the pathway data.
+  # TODO: this input is a simplification of incoming vote data. We will not use
+  # a widget just the pathway data.
   div(
     style = "display: grid; gap: 20px;",
     actionButton("rand_data", "Incoming data :)"),
     div(
       style = "border: 3px gray solid; border-radius: 5px",
-      plotlyOutput(height = "150px","vote_plot")
+      plotlyOutput(height = "150px", "vote_plot")
     ),
     verbatimTextOutput("clickevent")
   )
 )
 
-server <- function(input, output, session){
+server <- function(input, output, session) {
   # To allow smooth animation between data updates.
   frame_n <- reactiveVal(1)
   output$clickevent <- renderPrint({
@@ -39,12 +42,26 @@ server <- function(input, output, session){
         hoverinfo = "none",
         line = list(border = "round", width = 10, simplify = FALSE, color = "gray")
       ) %>%
-      add_animated_marker(., ypos = 0, size = 25, symbol = "circle",color = "gray", lwd = 2, lcol = "white", frame = first_frame) %>%
+      add_animated_marker(
+        .,
+        ypos = 0,
+        size = 25,
+        symbol = "circle",
+        color = "gray",
+        lwd = 2,
+        lcol = "white",
+        frame = first_frame
+      ) %>%
        layout(
         yaxis = list(visible = FALSE, fixedrange = TRUE, range = list(-1, 1)),
         xaxis = list(
-          zeroline = TRUE, showline = FALSE, showticklabels = FALSE, showgrid = TRUE,
-          fixedrange = TRUE, range = list(constants$votes$min - 0.1, constants$votes$max + 0.1)),
+          zeroline = TRUE,
+          showline = FALSE,
+          showticklabels = FALSE,
+          showgrid = TRUE,
+          fixedrange = TRUE,
+          range = list(constants$votes$min - 0.1, constants$votes$max + 0.1)
+        ),
         showlegend = FALSE
       ) %>%
       animation_opts(frame = 500, transition = 500, redraw = FALSE, mode = "next") %>%
@@ -85,4 +102,3 @@ server <- function(input, output, session){
 }
 
 shinyApp(ui, server)
-

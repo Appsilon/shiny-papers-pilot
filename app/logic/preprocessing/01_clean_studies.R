@@ -16,7 +16,8 @@ mechanisms_df <- data.frame(
 )
 
 # summarize important variables
-# TODO: check what "mix" means for MPAname...are these studies spanning several MPAs? If so, do we know which MPAs?
+# TODO: check what "mix" means for MPAname...are these studies spanning several
+# MPAs? If so, do we know which MPAs?
 # For now, we might go by assuming that each study is about 1 MPA only.
 studies <- studies %>%
   filter(!is.na(MPAname) & MPAname != "mix" & MPAname != "") %>%

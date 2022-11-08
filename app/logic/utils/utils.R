@@ -119,19 +119,27 @@ create_tooltip <- function(
 #' @param height
 #'
 #' @export
-mechanism_card <- function(glide_id, element_id, mechanism, color, icon, width = "100px", height = "85px") {
+mechanism_card <- function(
+    glide_id,
+    element_id,
+    mechanism,
+    color,
+    icon,
+    width = "100px",
+    height = "85px"
+) {
   mechanism <- toupper(x = mechanism)
 
   out <- tags$a(
-    class = 'pathway-card',
-    style = glue('background: {color}; width: {width}; height: {height}'),
-    onclick = glue("glide_selected('{element_id}', '{glide_id}')"),
+    class = "pathway-card",
+    style = glue("background: {color}; width: {width}; height: {height}"),
+    onclick = glue("glideSelected('{element_id}', '{glide_id}')"),
     tags$img(
       src = icon,
-      class = 'pathway-icon'
+      class = "pathway-icon"
     ),
     tags$p(
-      class = 'pathway-title',
+      class = "pathway-title",
       mechanism
     )
   )
