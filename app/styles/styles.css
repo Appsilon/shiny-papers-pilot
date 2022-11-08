@@ -1,0 +1,135 @@
+/* Leaflet */
+/* Maps */
+.leaflet-popup-content {
+  width: max-content !important;
+}
+
+/* Popup */
+.popup-title {
+  margin: 0px;
+}
+
+.flag {
+  width: 40px;
+  margin-right: 5px;
+  vertical-align: text-top;
+}
+
+.grid-four {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+}
+
+.info-div {
+  margin: 3px 0px 3px 15px;
+}
+
+.info-title {
+  color: #a5a5a5;
+  margin: 0px;
+  font-size: small;
+  line-height: 15px;
+}
+
+.info-content {
+  color: #3e3e3e;
+  margin: 0px;
+  font-size: medium;
+  line-height: 15px;
+}
+
+.mechanism-div {
+  padding: 5px 10px;
+  height: 50px;
+  border-radius: 15px;
+}
+
+.mechanism-title {
+  display: inline;
+  line-height: 40px;
+  margin-left: 10%;
+  color: white;
+}
+
+.mechanism-icon {
+  width: 40px;
+  float: right;
+  margin-right: 10%;
+  filter: invert(1);
+}
+
+.direction-div {
+  text-align: center;
+}
+
+.direction-icon {
+  width: 70px;
+}
+
+.direction-number {
+  font-size:; 15px;
+}
+
+/* Cards */
+.pathway-grid {
+  width: 60%;
+  margin: 10px auto;
+  background-color: #efefef73;
+  border-radius: 15px;
+  box-shadow: 0 1px 3px 0 #bcbdbd, 0 0 0 1px #d4d4d5;
+}
+
+.pathway-card {
+  margin: 5px;
+  padding: 5px;
+  position: relative;
+  float: left;
+  border-radius: 15px;
+  transition: top ease 0.5s;
+  box-shadow: 0 1px 3px 0 #bcbdbd, 0 0 0 1px #d4d4d5;
+}
+
+.pathway-card:hover {
+  filter: brightness(0.95);
+  top: -3px;
+}
+
+.pathway-title {
+  color: #ffffff;
+  text-align: right;
+  position: absolute;
+  bottom: 0%;
+  right: 1em;
+  font-size: 9px;
+}
+
+.pathway-icon {
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  width: 35%;
+  filter: invert(1);
+}
+
+/* Glide */
+.glide-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.glide-control {
+  background: #d3d3d3;
+  color: white;
+  border: solid 1px white;
+  border-radius: 5px;
+}
+
+.glide__slides {
+  white-space: inherit;
+}
+
+.glide__arrows {
+  margin-right: 10px;
+  margin-left: 10px;
+}
