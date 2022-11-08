@@ -95,11 +95,18 @@ server <- function(id, consts) {
 
       plot_ly(source = plot_id) %>%
         add_trace(
-          x = rep(consts$votes$init, 3), y = rep(0, 3), frame = first_frame,
+          x = rep(consts$votes$init, 3),
+          y = rep(0, 3),
+          frame = first_frame,
           type = "scatter",
           mode = "lines",
           hoverinfo = "none",
-          line = list(border = "round", width = 10, simplify = FALSE, color = "gray")
+          line = list(
+            border = "round",
+            width = 10,
+            simplify = FALSE,
+            color = "gray"
+          )
         ) %>%
         utils$add_animated_marker(
           .,
@@ -113,18 +120,30 @@ server <- function(id, consts) {
           frame = first_frame
         ) %>%
         layout(
-          yaxis = list(visible = FALSE, fixedrange = TRUE, range = list(-1, 1)),
+          yaxis = list(
+            visible = FALSE,
+            fixedrange = TRUE,
+            range = list(-1, 1)
+          ),
           xaxis = list(
             zeroline = TRUE,
             showline = FALSE,
             showticklabels = FALSE,
             showgrid = TRUE,
             fixedrange = TRUE,
-            range = list(consts$votes$min - 0.1, consts$votes$max + 0.1)
+            range = list(
+              consts$votes$min - 0.1,
+              consts$votes$max + 0.1
+            )
           ),
           showlegend = FALSE
         ) %>%
-        animation_opts(frame = 500, transition = 500, redraw = FALSE, mode = "next") %>%
+        animation_opts(
+          frame = 500,
+          transition = 500,
+          redraw = FALSE,
+          mode = "next"
+        ) %>%
         config(displayModeBar = FALSE)
     })
 
