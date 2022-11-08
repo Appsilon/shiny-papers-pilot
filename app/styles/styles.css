@@ -16,18 +16,23 @@
 }
 
 .flag {
-  width: 40px;
+  width: 50px;
   margin-right: 5px;
   vertical-align: text-top;
 }
 
-.grid-four {
+.grid-four-text {
+  display: grid;
+  grid-template-columns: auto 180px auto 180px;
+}
+
+.grid-four-img {
   display: grid;
   grid-template-columns: auto auto auto auto;
 }
 
 .info-div {
-  margin: 3px 0px 3px 15px;
+  margin: 3px 10px 3px 10px;
 }
 
 .info-title {
@@ -42,6 +47,34 @@
   margin: 0px;
   font-size: medium;
   line-height: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.info-content-hover {
+  position: relative;
+}
+
+.info-content-hover:before {
+  content: attr(data-hover);
+  width: fit-content;
+  visibility: hidden;
+  opacity: 0;
+  background-color: black;
+  color: #fff;
+  border-radius: 5px;
+  padding: 5px;
+  transition: opacity 1s ease-in-out;
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 110%;
+}
+
+.info-content-hover:hover:before {
+  opacity: 1;
+  visibility: visible;
 }
 
 .mechanism-div {

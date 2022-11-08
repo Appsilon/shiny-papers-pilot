@@ -4,6 +4,7 @@ box::use(
     first,
     group_by,
     n,
+    n_distinct,
     select,
     summarise,
     ungroup,
@@ -21,12 +22,13 @@ box::use(
 #' @param studies
 #'
 #' @export
-summarise_mpas <- function(studies) {
+summarise_studies <- function(studies) {
   studies <- studies %>%
-    group_by(ID, name, mechanism, mechanism_internal) %>%
+    group_by(country, mechanism, mechanism_internal) %>%
     summarise(
       flag = first(flag),
-      n_studies = n(),
+      n_mpas = n_distinct(name),
+      n_studies = n_distinct(ID),
       n_positive = sum(direction == "positive"),
       n_negative = sum(direction == "negative"),
       n_neutral = sum(direction == "neutral"),

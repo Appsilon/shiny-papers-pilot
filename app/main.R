@@ -1,4 +1,7 @@
 box::use(
+  sf[
+    st_as_sf
+  ],
   shiny[
     fluidPage,
     includeCSS,
@@ -21,9 +24,12 @@ box::use(
 
 # get the data
 constants <- read_yaml(file = "app/static/constants/constants.yml")
-shp <- readRDS(file = "app/static/data/preprocessing/mpas_shp.RDS")
+mpas_shp <- readRDS(file = "app/static/data/preprocessing/mpas_shp.RDS")
+countries_shp <- readRDS(file = "app/static/data/preprocessing/countries_shp.RDS")
+mpas_shp <- st_as_sf(x = mpas_shp)
+countries_shp <- st_as_sf(x = countries_shp)
 studies <- readRDS(file = "app/static/data/preprocessing/studies.RDS")
-mpas <- utils_data$summarise_mpas(studies)
+studies <- utils_data$summarise_studies(studies)
 
 #' @export
 ui <- function(id) {
@@ -60,6 +66,6 @@ server <- function(id) {
 
     # modules
     pathways$server(id = "pathways")
-    map$server(id = "map", mpas = mpas, shp = shp, consts = constants)
+    map$server(id = "map", studies = studies, shp = countries_shp, consts = constants)
   })
 }

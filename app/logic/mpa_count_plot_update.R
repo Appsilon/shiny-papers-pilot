@@ -2,7 +2,9 @@ library(shiny)
 library(plotly)
 library(dplyr)
 library(shinyjs)
-source("utils.R")
+source("app/logic/utils/utils.R")
+
+constants <- read_yaml(file = "app/static/constants/constants.yml")
 
 ui <- fluidPage(
   useShinyjs(),

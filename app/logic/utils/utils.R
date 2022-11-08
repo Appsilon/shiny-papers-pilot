@@ -11,8 +11,8 @@ box::use(
 #' @description
 #'
 #' @param consts
-#' @param name
 #' @param mechanism
+#' @param n_mpas
 #' @param n_studies
 #' @param n_positive
 #' @param n_negative
@@ -27,8 +27,8 @@ box::use(
 #'
 #' @export
 create_tooltip <- function(
-    consts, name, mechanism,
-    n_studies, n_positive, n_negative, n_neutral, n_ambiguous,
+    consts, mechanism,
+    n_mpas, n_studies, n_positive, n_negative, n_neutral, n_ambiguous,
     country, flag, continent, ocean, climate, ecosystem
 ) {
   # get the metadata
@@ -37,39 +37,47 @@ create_tooltip <- function(
   # tooltip template
   tooltip_html <- glue(
     "
-    <!-- title: flag, country and MPA name -->
+    <!-- title: flag and country -->
     <h3 class = 'popup-title'>
       <img src = {flag} class = 'flag'></img>
-      {country} - <b>{name}</b>
+      {country}
     </h2>
 
     <hr>
 
     <!-- MPA information -->
-    <div class = 'grid-four'>
+    <div class = 'grid-four-text'>
       <div class = 'info-div'>
         <h4 class = 'info-title'>Continent:</h4>
       </div>
       <div class = 'info-div'>
-        <h4 class = 'info-content'>{continent}</h3>
+        <span class = 'info-content-hover' data-hover = '{continent}'>
+          <h4 class = 'info-content'>{continent}</h3>
+        </span>
       </div>
       <div class = 'info-div'>
         <h4 class = 'info-title'>Climate:</h4>
       </div>
       <div class = 'info-div'>
-        <h4 class = 'info-content'>{climate}</h3>
+        <span class = 'info-content-hover' data-hover = '{climate}'>
+          <h4 class = 'info-content'>{climate}</h3>
+        </span>
       </div>
       <div class = 'info-div'>
         <h4 class = 'info-title'>Ocean:</h4>
       </div>
       <div class = 'info-div'>
-        <h4 class = 'info-content'>{ocean}</h3>
+        <span class = 'info-content-hover' data-hover = '{ocean}'>
+          <h4 class = 'info-content'>{ocean}</h3>
+        </span>
       </div>
       <div class = 'info-div'>
         <h4 class = 'info-title'>Ecosystem:</h4>
       </div>
       <div class = 'info-div'>
-        <h4 class = 'info-content'>{ecosystem}</h3>
+        <span class = 'info-content-hover' data-hover = '{ecosystem}'>
+          <h4 class = 'info-content'>{ecosystem}</h3>
+        </span>
       </div>
     </div>
 
@@ -83,7 +91,7 @@ create_tooltip <- function(
 
     <!-- mechanism information -->
 
-    <div class = 'grid-four' style = 'margin-top: 20px'>
+    <div class = 'grid-four-img' style = 'margin-top: 20px'>
       <div class = 'direction-div'>
         <img src = 'https://i.ibb.co/Y2h1Jq5/positive.png' class = 'direction-icon'></img>
         <h5 class = 'direction-number'>{n_positive}</h5>
