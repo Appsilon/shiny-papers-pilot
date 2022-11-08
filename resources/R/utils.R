@@ -202,3 +202,52 @@ get_flag_link <- function(flag) {
 
   return(url)
 }
+
+#' @title
+#' @description
+#'
+#' @param val
+#'
+#' @export
+set_line_color <- function(val) {
+  case_when(
+    val > 0 ~ "green",
+    val == 0 ~ "grey",
+    TRUE ~ "red"
+  )
+}
+
+#' @title
+#' @description
+#'
+#' @param p
+#' @param ypos
+#' @param symbol
+#' @param size
+#' @param color
+#' @param lwd
+#' @param lcol
+#' @param frame
+#'
+#' @export
+add_animated_marker <- function(p, ypos = 0.01, symbol = "arrow-down", size = 20,
+                                color = "green", lwd = 1, lcol = "black", frame = 1) {
+  p %>%
+    add_trace(
+    type = "scatter",
+    mode = "markers",
+    x = rep(constants$votes$init, 2),
+    y = ypos,
+    frame = frame,
+    hoverinfo = "none",
+    marker = list(
+      symbol = symbol,
+      size = size,
+      color = color,
+      line = list(
+        width = lwd,
+        color = lcol
+      )
+    )
+  )
+}
