@@ -31,6 +31,9 @@ box::use(
     plotlyProxyInvoke,
     plot_ly,
     renderPlotly,
+  ],
+  stats[
+    runif,
   ]
 )
 
@@ -157,10 +160,10 @@ server <- function(id, consts) {
       js$resetClick()
     }, ignoreInit = TRUE, ignoreNULL = TRUE)
 
-    observeEvent(session$userData$pathway, {
+    observeEvent(session$userData$pathway(), {
       frame_n(frame_n() + 1)
 
-      votes <- 0.85
+      votes <- runif(1, -1, 1)
 
       plotlyProxy(
         outputId = plot_id,
@@ -184,6 +187,6 @@ server <- function(id, consts) {
             traces = list(0, 1)
           )
         )
-    })
+    }, ignoreInit = TRUE)
   })
 }
