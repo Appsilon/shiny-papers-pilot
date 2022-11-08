@@ -176,3 +176,18 @@
   margin-right: 10px;
   margin-left: 10px;
 }
+
+/* absolute panel */
+#controls {
+  background-color: white;
+  padding: 0 20px 20px 20px;
+  cursor: move;
+  opacity: 0.65;
+  zoom: 0.9;
+  transition: opacity 500ms 1s;
+}
+
+#controls:hover {
+  opacity: 0.95;
+  transition-delay: 0;
+}

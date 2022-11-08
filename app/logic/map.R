@@ -3,6 +3,7 @@ box::use(
   dplyr[
     `%>%`,
     filter,
+    if_else,
     left_join,
     mutate,
   ],
@@ -69,7 +70,11 @@ server <- function(id, studies, shp, consts) {
             climate = climate,
             ecosystem = ecosystem
           ),
-          prop = n_positive / (n_studies - n_ambiguous)
+          prop = if_else(
+            condition = n_studies != n_ambiguous,
+            true = n_positive / (n_studies - n_ambiguous),
+            false = 0
+          )
         )
 
       # draw the map

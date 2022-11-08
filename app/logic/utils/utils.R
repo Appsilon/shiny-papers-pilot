@@ -1,7 +1,9 @@
 # packages and funcitons
 box::use(
+  dplyr[...],
   glue[...],
   htmltools[...],
+  plotly[...],
   shiny[...],
   stringr[...],
   yaml[...],
@@ -226,17 +228,20 @@ get_flag_link <- function(flag) {
 #'
 #' @export
 set_line_color <- function(val) {
-  case_when(
+  cases <- case_when(
     val > 0 ~ "green",
     val == 0 ~ "grey",
     TRUE ~ "red"
   )
+
+  return(cases)
 }
 
 #' @title
 #' @description
 #'
 #' @param p
+#' @param consts
 #' @param ypos
 #' @param symbol
 #' @param size
@@ -246,24 +251,35 @@ set_line_color <- function(val) {
 #' @param frame
 #'
 #' @export
-add_animated_marker <- function(p, ypos = 0.01, symbol = "arrow-down", size = 20,
-                                color = "green", lwd = 1, lcol = "black", frame = 1) {
-  p %>%
+add_animated_marker <- function(
+    p,
+    consts,
+    ypos = 0.01,
+    symbol = "arrow-down",
+    size = 20,
+    color = "green",
+    lwd = 1,
+    lcol = "black",
+    frame = 1
+) {
+  p <- p %>%
     add_trace(
-    type = "scatter",
-    mode = "markers",
-    x = rep(constants$votes$init, 2),
-    y = ypos,
-    frame = frame,
-    hoverinfo = "none",
-    marker = list(
-      symbol = symbol,
-      size = size,
-      color = color,
-      line = list(
-        width = lwd,
-        color = lcol
+      type = "scatter",
+      mode = "markers",
+      x = rep(consts$votes$init, 2),
+      y = ypos,
+      frame = frame,
+      hoverinfo = "none",
+      marker = list(
+        symbol = symbol,
+        size = size,
+        color = color,
+        line = list(
+          width = lwd,
+          color = lcol
+        )
       )
     )
-  )
+
+  return(p)
 }

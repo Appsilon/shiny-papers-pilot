@@ -11,6 +11,9 @@ box::use(
     reactiveVal,
     tags,
   ],
+  shinyjs[
+    useShinyjs,
+  ],
   yaml[
     read_yaml,
   ],
@@ -18,6 +21,7 @@ box::use(
 
 box::use(
   map = logic/map,
+  mpa_count = logic/mpa_count,
   pathways = logic/pathways_cards,
   utils_data = logic/utils/utils_data,
 )
@@ -38,6 +42,9 @@ ui <- function(id) {
 
   # ui
   fluidPage(
+    # shinyjs
+    useShinyjs(),
+
     # glidejs
     tags$link(
       rel = "stylesheet",
@@ -53,7 +60,8 @@ ui <- function(id) {
     tags$div(
       class = "app-conteiner",
       pathways$ui(id = ns("pathways"), consts = constants),
-      map$ui(id = ns("map"))
+      map$ui(id = ns("map")),
+      mpa_count$ui(id = ns("mpa_count"))
     )
   )
 }
@@ -67,5 +75,6 @@ server <- function(id) {
     # modules
     pathways$server(id = "pathways")
     map$server(id = "map", studies = studies, shp = countries_shp, consts = constants)
+    mpa_count$server(id = "mpa_count", consts = constants)
   })
 }
