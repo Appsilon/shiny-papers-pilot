@@ -21,7 +21,7 @@ box::use(
 
 box::use(
   map = logic/map,
-  mpa_count = logic/mpa_count,
+  vote_count = logic/vote_count,
   pathways = logic/pathways_cards,
   utils_data = logic/utils/utils_data,
 )
@@ -61,7 +61,7 @@ ui <- function(id) {
       class = "app-conteiner",
       pathways$ui(id = ns("pathways"), consts = constants),
       map$ui(id = ns("map")),
-      mpa_count$ui(id = ns("mpa_count"))
+      vote_count$ui(id = ns("vote_count"))
     )
   )
 }
@@ -80,8 +80,8 @@ server <- function(id) {
       shp = countries_shp,
       consts = constants
     )
-    mpa_count$server(
-      id = "mpa_count",
+    vote_count$server(
+      id = "vote_count",
       studies = studies,
       consts = constants
     )

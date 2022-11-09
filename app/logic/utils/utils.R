@@ -340,7 +340,7 @@ plot_vote_count <- function(plot_id, votes, consts, first_frame) {
       ypos = 0,
       size = 25,
       symbol = "circle",
-      color = "gray",
+      color = set_line_color(votes),
       lwd = 2,
       lcol = "white",
       frame = first_frame
@@ -407,10 +407,53 @@ update_vote_count <- function(session, plot_id, votes, frame) {
           ),
           list(
             x = rep(votes, 2),
+            marker = list(color = set_line_color(votes)),
             frame = frame
           )
         ),
         traces = list(0, 1)
       )
     )
+}
+
+#' @title
+#' @description
+#'
+#' @param mechanism
+#' @param mechanism_icon
+#' @param n_votes
+#'
+#' @export
+create_header <- function(mechanism, mechanism_icon, n_votes) {
+  tags$div(
+    class = "absolute-panel-header",
+    tags$div(
+      class = "absolute-panel-fifty",
+      tags$div(
+        styles = "float: left;",
+        tags$h2(
+          "Vote-counting",
+          class = "absolute-panel-text"
+        ),
+        tags$p(
+          glue("# Votes: {n_votes}"),
+          style = "margin: 0px"
+        )
+      )
+    ),
+    tags$div(
+      class = "absolute-panel-fifty",
+      tags$div(
+        style = "display: flex; float: right; text-align: right;",
+        tags$h2(
+          mechanism,
+          class = "absolute-panel-text"
+        ),
+        tags$img(
+          src = mechanism_icon,
+          class = "absolute-panel-img"
+        )
+      )
+    )
+  )
 }

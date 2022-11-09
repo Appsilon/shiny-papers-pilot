@@ -184,7 +184,6 @@
   padding: 20px;
   cursor: move;
   opacity: 0.65;
-  zoom: 0.9;
   transition: opacity 500ms 1s;
   border-radius: 15px;
 }
@@ -215,4 +214,9 @@
   border-radius: 10px;
   padding: 5px;
   margin-top: 15px
+}
+
+.vote-count-show-more {
+  margin: 10px 5px;
+  cursor: pointer;
 }
