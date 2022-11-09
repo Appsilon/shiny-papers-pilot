@@ -5,6 +5,7 @@ box::use(
   htmltools[...],
   plotly[...],
   shiny[...],
+  shinyjs[...],
   stringr[...],
   yaml[...],
 )
@@ -282,4 +283,127 @@ add_animated_marker <- function(
     )
 
   return(p)
+}
+
+#' @title
+#' @description
+#'
+#' @param vote_plot_id
+#' @param ...
+#'
+#' @export
+insert_vote_count <- function(vote_plot_id, ...) {
+  tags$div(
+    extendShinyjs(
+      text = glue(
+        "
+        shinyjs.resetClick = function() {
+          Shiny.onInputChange('.clientValue-plotly_click-{{vote_plot_id}}', 'null');
+        }",
+        .open = "{{",
+        .close = "}}"
+      ),
+      functions = c("resetClick")
+    ),
+    ...
+  )
+}
+
+#' @title
+#' @description
+#'
+#' @param plot_id
+#' @param consts
+#' @param first_frame
+#'
+#' @export
+plot_vote_count <- function(plot_id, consts, first_frame) {
+  p <- plot_ly(source = plot_id) %>%
+    add_trace(
+      x = rep(consts$votes$init, 3),
+      y = rep(0, 3),
+      frame = first_frame,
+      type = "scatter",
+      mode = "lines",
+      hoverinfo = "none",
+      line = list(
+        border = "round",
+        width = 10,
+        simplify = FALSE,
+        color = "gray"
+      )
+    ) %>%
+    add_animated_marker(
+      .,
+      consts = consts,
+      ypos = 0,
+      size = 25,
+      symbol = "circle",
+      color = "gray",
+      lwd = 2,
+      lcol = "white",
+      frame = first_frame
+    ) %>%
+    layout(
+      yaxis = list(
+        visible = FALSE,
+        fixedrange = TRUE,
+        range = list(-1, 1)
+      ),
+      xaxis = list(
+        zeroline = TRUE,
+        showline = FALSE,
+        showticklabels = FALSE,
+        showgrid = TRUE,
+        fixedrange = TRUE,
+        range = list(
+          consts$votes$min - 0.1,
+          consts$votes$max + 0.1
+        )
+      ),
+      showlegend = FALSE
+    ) %>%
+    animation_opts(
+      frame = 500,
+      transition = 500,
+      redraw = FALSE,
+      mode = "next"
+    ) %>%
+    config(displayModeBar = FALSE)
+
+  return(p)
+}
+
+#' @title
+#' @description
+#'
+#' @param session
+#' @param plot_id
+#' @param votes
+#' @param frame
+#'
+#' @export
+update_vote_count <- function(session, plot_id, votes, frame) {
+  plotlyProxy(
+    outputId = plot_id,
+    session = session,
+    deferUntilFlush = FALSE
+  ) %>%
+    plotlyProxyInvoke(
+      "animate",
+      list(
+        data = list(
+          list(
+            x = c(0, votes, 0),
+            frame = frame,
+            line = list(color = set_line_color(votes))
+          ),
+          list(
+            x = rep(votes, 2),
+            frame = frame
+          )
+        ),
+        traces = list(0, 1)
+      )
+    )
 }

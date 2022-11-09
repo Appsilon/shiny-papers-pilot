@@ -1,11 +1,4 @@
 box::use(
-  glue[
-    glue
-  ],
-  dplyr[
-    `%>%`,
-    case_when,
-  ],
   shiny[
     absolutePanel,
     isolate,
@@ -17,19 +10,11 @@ box::use(
     tags,
   ],
   shinyjs[
-    extendShinyjs,
     js,
   ],
   plotly[
-    add_trace,
-    animation_opts,
-    config,
     event_data,
-    layout,
     plotlyOutput,
-    plotlyProxy,
-    plotlyProxyInvoke,
-    plot_ly,
     renderPlotly,
   ],
   stats[
@@ -65,19 +50,8 @@ ui <- function(id, consts) {
 
     tags$h2("Vote-counting"),
 
-    tags$div(
-      extendShinyjs(
-        text = glue(
-        "
-        shinyjs.resetClick = function() {
-          Shiny.onInputChange('.clientValue-plotly_click-{{vote_plot_id}}', 'null');
-        }",
-        .open = "{{",
-        .close = "}}"
-        ),
-        functions = c("resetClick")
-      ),
-
+    utils$insert_vote_count(
+      vote_plot_id = vote_plot_id,
       tags$div(
         plotlyOutput(outputId = vote_plot_id, height = "150px", width = "40vw")
       )
@@ -96,58 +70,11 @@ server <- function(id, consts) {
     output[[plot_id]] <- renderPlotly({
       first_frame <- isolate(frame_n())
 
-      plot_ly(source = plot_id) %>%
-        add_trace(
-          x = rep(consts$votes$init, 3),
-          y = rep(0, 3),
-          frame = first_frame,
-          type = "scatter",
-          mode = "lines",
-          hoverinfo = "none",
-          line = list(
-            border = "round",
-            width = 10,
-            simplify = FALSE,
-            color = "gray"
-          )
-        ) %>%
-        utils$add_animated_marker(
-          .,
-          consts = consts,
-          ypos = 0,
-          size = 25,
-          symbol = "circle",
-          color = "gray",
-          lwd = 2,
-          lcol = "white",
-          frame = first_frame
-        ) %>%
-        layout(
-          yaxis = list(
-            visible = FALSE,
-            fixedrange = TRUE,
-            range = list(-1, 1)
-          ),
-          xaxis = list(
-            zeroline = TRUE,
-            showline = FALSE,
-            showticklabels = FALSE,
-            showgrid = TRUE,
-            fixedrange = TRUE,
-            range = list(
-              consts$votes$min - 0.1,
-              consts$votes$max + 0.1
-            )
-          ),
-          showlegend = FALSE
-        ) %>%
-        animation_opts(
-          frame = 500,
-          transition = 500,
-          redraw = FALSE,
-          mode = "next"
-        ) %>%
-        config(displayModeBar = FALSE)
+      utils$plot_vote_count(
+        plot_id = plot_id,
+        consts = consts,
+        first_frame = first_frame
+      )
     })
 
     vote_plot_event <- reactive(
@@ -162,31 +89,14 @@ server <- function(id, consts) {
 
     observeEvent(session$userData$pathway(), {
       frame_n(frame_n() + 1)
-
       votes <- runif(1, -1, 1)
 
-      plotlyProxy(
-        outputId = plot_id,
+      utils$update_vote_count(
         session = session,
-        deferUntilFlush = FALSE
-      ) %>%
-        plotlyProxyInvoke(
-          "animate",
-          list(
-            data = list(
-              list(
-                x = c(0, votes, 0),
-                frame = frame_n(),
-                line = list(color = utils$set_line_color(votes))
-              ),
-              list(
-                x = rep(votes, 2),
-                frame = frame_n()
-              )
-            ),
-            traces = list(0, 1)
-          )
-        )
+        plot_id = plot_id,
+        votes = votes,
+        frame = frame_n()
+      )
     }, ignoreInit = TRUE)
   })
 }
