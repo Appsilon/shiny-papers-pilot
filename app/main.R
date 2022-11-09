@@ -28,9 +28,9 @@ box::use(
 
 # get the data
 constants <- read_yaml(file = "app/static/constants/constants.yml")
-mpas_shp <- readRDS(file = "app/static/data/preprocessing/mpas_shp.RDS")
+# mpas_shp <- readRDS(file = "app/static/data/preprocessing/mpas_shp.RDS")
 countries_shp <- readRDS(file = "app/static/data/preprocessing/countries_shp.RDS")
-mpas_shp <- st_as_sf(x = mpas_shp)
+# mpas_shp <- st_as_sf(x = mpas_shp)
 countries_shp <- st_as_sf(x = countries_shp)
 studies <- readRDS(file = "app/static/data/preprocessing/studies.RDS")
 studies <- utils_data$summarise_studies(studies)
