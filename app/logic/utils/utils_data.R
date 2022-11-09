@@ -1,8 +1,10 @@
 box::use(
   dplyr[
     `%>%`,
+    filter,
     first,
     group_by,
+    mutate,
     n,
     n_distinct,
     select,
@@ -28,7 +30,8 @@ summarise_studies <- function(studies) {
     summarise(
       flag = first(flag),
       n_mpas = n_distinct(name),
-      n_studies = n_distinct(ID),
+      n_studies = n_distinct(ID2),
+      n_votes = n(),
       n_positive = sum(direction == "positive"),
       n_negative = sum(direction == "negative"),
       n_neutral = sum(direction == "neutral"),
@@ -43,4 +46,32 @@ summarise_studies <- function(studies) {
     ungroup()
 
   return(studies)
+}
+
+#' @title
+#' @description
+#'
+#' @param studies
+#' @param mechanism
+#'
+#' @export
+summarise_mechanism <- function(studies, mechanism) {
+  mechanism_sel <- mechanism
+  ns <- studies %>%
+    filter(mechanism_internal == mechanism_sel) %>%
+    summarise(
+      mechanism = first(mechanism),
+      mechanism_internal = first(mechanism_internal),
+      n_studies = sum(n_studies),
+      n_votes = sum(n_votes),
+      n_positive = sum(n_positive),
+      n_negative = sum(n_negative),
+      n_neutral = sum(n_neutral),
+      n_ambiguous = sum(n_ambiguous)
+    ) %>%
+    mutate(
+      votes = (n_positive - n_negative)/(n_positive + n_negative)
+    )
+
+  return(ns)
 }

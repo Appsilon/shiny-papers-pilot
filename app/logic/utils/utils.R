@@ -241,53 +241,6 @@ set_line_color <- function(val) {
 #' @title
 #' @description
 #'
-#' @param p
-#' @param consts
-#' @param ypos
-#' @param symbol
-#' @param size
-#' @param color
-#' @param lwd
-#' @param lcol
-#' @param frame
-#'
-#' @export
-add_animated_marker <- function(
-    p,
-    consts,
-    ypos = 0.01,
-    symbol = "arrow-down",
-    size = 20,
-    color = "green",
-    lwd = 1,
-    lcol = "black",
-    frame = 1
-) {
-  p <- p %>%
-    add_trace(
-      type = "scatter",
-      mode = "markers",
-      x = rep(consts$votes$init, 2),
-      y = ypos,
-      frame = frame,
-      hoverinfo = "none",
-      marker = list(
-        symbol = symbol,
-        size = size,
-        color = color,
-        line = list(
-          width = lwd,
-          color = lcol
-        )
-      )
-    )
-
-  return(p)
-}
-
-#' @title
-#' @description
-#'
 #' @param vote_plot_id
 #' @param ...
 #'
@@ -312,30 +265,78 @@ insert_vote_count <- function(vote_plot_id, ...) {
 #' @title
 #' @description
 #'
+#' @param p
+#' @param consts
+#' @param ypos
+#' @param symbol
+#' @param size
+#' @param color
+#' @param lwd
+#' @param lcol
+#' @param frame
+#'
+#' @export
+add_animated_marker <- function(
+    p,
+    xpos,
+    ypos = 0.01,
+    symbol = "arrow-down",
+    size = 20,
+    color = "green",
+    lwd = 1,
+    lcol = "black",
+    frame = 1
+) {
+  x_label <- glue("<extra></extra>{round(abs(xpos)*100, 2)} %")
+  p <- p %>%
+    add_trace(
+      type = "scatter",
+      mode = "markers",
+      x = rep(xpos, 2),
+      y = ypos,
+      frame = frame,
+      hovertemplate = x_label,
+      marker = list(
+        symbol = symbol,
+        size = size,
+        color = color,
+        line = list(
+          width = lwd,
+          color = lcol
+        )
+      )
+    )
+
+  return(p)
+}
+
+#' @title
+#' @description
+#'
 #' @param plot_id
+#' @param votes
 #' @param consts
 #' @param first_frame
 #'
 #' @export
-plot_vote_count <- function(plot_id, consts, first_frame) {
+plot_vote_count <- function(plot_id, votes, consts, first_frame) {
   p <- plot_ly(source = plot_id) %>%
     add_trace(
-      x = rep(consts$votes$init, 3),
+      x = c(0, votes, 0),
       y = rep(0, 3),
       frame = first_frame,
       type = "scatter",
       mode = "lines",
-      hoverinfo = "none",
       line = list(
         border = "round",
         width = 10,
         simplify = FALSE,
-        color = "gray"
+        color = set_line_color(votes)
       )
     ) %>%
     add_animated_marker(
       .,
-      consts = consts,
+      xpos = votes,
       ypos = 0,
       size = 25,
       symbol = "circle",
@@ -353,13 +354,19 @@ plot_vote_count <- function(plot_id, consts, first_frame) {
       xaxis = list(
         zeroline = TRUE,
         showline = FALSE,
-        showticklabels = FALSE,
         showgrid = TRUE,
         fixedrange = TRUE,
+        showticklabels = TRUE,
         range = list(
           consts$votes$min - 0.1,
           consts$votes$max + 0.1
-        )
+        ),
+        ticktext = list(
+          "100%\nNegative Evidence",
+          "0\nEquivalent Evidence",
+          "100%\nPositive Evidence"
+        ),
+        tickvals = list(-1, 0, 1)
       ),
       showlegend = FALSE
     ) %>%

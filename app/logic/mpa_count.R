@@ -1,12 +1,18 @@
 box::use(
+  glue[
+    glue
+  ],
   shiny[
     absolutePanel,
+    eventReactive,
+    htmlOutput,
     isolate,
     moduleServer,
     NS,
     observeEvent,
     reactive,
     reactiveVal,
+    renderUI,
     tags,
   ],
   shinyjs[
@@ -23,7 +29,8 @@ box::use(
 )
 
 box::use(
-  utils = ./utils/utils
+  utils = ./utils/utils,
+  utils_data = ./utils/utils_data,
 )
 
 plot_id <- "vote_plot"
@@ -48,55 +55,97 @@ ui <- function(id, consts) {
     width = "fit-content",
     height = "fit-content",
 
-    tags$h2("Vote-counting"),
+    htmlOutput(outputId = ns("header")),
 
-    utils$insert_vote_count(
-      vote_plot_id = vote_plot_id,
-      tags$div(
-        plotlyOutput(outputId = vote_plot_id, height = "150px", width = "40vw")
-      )
+    tags$div(
+      style = "border: solid 1px grey; border-radius: 10px; padding: 5px; margin-top: 15px",
+      class = "vote-count-plot",
+      plotlyOutput(outputId = vote_plot_id, height = "150px", width = "40vw")
     )
   )
 }
 
-server <- function(id, consts) {
+server <- function(id, studies, consts) {
   moduleServer(id, function(input, output, session) {
     # environment
     ns <- session$ns
     vote_plot_id <- ns(plot_id)
 
-    # To allow smooth animation between data updates.
-    frame_n <- reactiveVal(1)
-    output[[plot_id]] <- renderPlotly({
-      first_frame <- isolate(frame_n())
-
-      utils$plot_vote_count(
-        plot_id = plot_id,
-        consts = consts,
-        first_frame = first_frame
+    # Get necessary statistics
+    statistics <- eventReactive(session$userData$pathway(), {
+      ns <- utils_data$summarise_mechanism(
+        studies = studies,
+        mechanism = session$userData$pathway()
       )
+
+      return(ns)
     })
-
-    vote_plot_event <- reactive(
-      event_data(
-        event = "plotly_click",
-        source = plot_id
-      )
-    )
-    observeEvent(vote_plot_event(), {
-      js$resetClick()
-    }, ignoreInit = TRUE, ignoreNULL = TRUE)
-
-    observeEvent(session$userData$pathway(), {
+    # To allow smooth animation between data updates.
+    frame_n <- reactiveVal(0)
+    observeEvent(statistics(), {
+      # managing frames
       frame_n(frame_n() + 1)
-      votes <- runif(1, -1, 1)
+      frame <- frame_n()
 
-      utils$update_vote_count(
-        session = session,
-        plot_id = plot_id,
-        votes = votes,
-        frame = frame_n()
-      )
-    }, ignoreInit = TRUE)
+      statistics_df <- statistics()
+      mechanism_internal <- statistics_df$mechanism_internal
+      mechanism <- statistics_df$mechanism
+      mechanism_meta <- consts$pathways[[mechanism_internal]]
+
+      # Header
+      output$header <- renderUI({
+        html_code <- tags$div(
+          class = "absolute-panel-header",
+          tags$div(
+            class = "absolute-panel-fifty",
+            tags$div(
+              styles = "float: left;",
+              tags$h2(
+                "Vote-counting",
+                class = "absolute-panel-text"
+              ),
+              tags$p(
+                glue("# Votes: {statistics_df$n_votes}"),
+                style = "margin: 0px"
+              )
+            )
+          ),
+          tags$div(
+            class = "absolute-panel-fifty",
+            tags$div(
+              style = "display: flex; float: right; text-align: right;",
+              tags$h2(
+                mechanism,
+                class = "absolute-panel-text"
+              ),
+              tags$img(
+                src = mechanism_meta$icon,
+                class = "absolute-panel-img"
+              )
+            )
+          )
+        )
+
+        return(html_code)
+      })
+
+      if (frame == 1) {
+        output[[plot_id]] <- renderPlotly({
+          utils$plot_vote_count(
+            plot_id = plot_id,
+            votes = statistics_df$votes,
+            consts = consts,
+            first_frame = frame
+          )
+        })
+      } else {
+        utils$update_vote_count(
+          session = session,
+          plot_id = plot_id,
+          votes = statistics_df$votes,
+          frame = frame_n()
+        )
+      }
+    }, ignoreNULL = TRUE)
   })
 }

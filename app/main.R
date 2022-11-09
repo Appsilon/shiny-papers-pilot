@@ -74,7 +74,16 @@ server <- function(id) {
 
     # modules
     pathways$server(id = "pathways")
-    map$server(id = "map", studies = studies, shp = countries_shp, consts = constants)
-    mpa_count$server(id = "mpa_count", consts = constants)
+    map$server(
+      id = "map",
+      studies = studies,
+      shp = countries_shp,
+      consts = constants
+    )
+    mpa_count$server(
+      id = "mpa_count",
+      studies = studies,
+      consts = constants
+    )
   })
 }

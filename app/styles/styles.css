@@ -193,3 +193,26 @@
   opacity: 0.95;
   transition-delay: 0;
 }
+
+.absolute-panel-header {
+  display: flex;
+}
+
+.absolute-panel-fifty{
+  width: 50%;
+}
+
+.absolute-panel-text{
+  margin: 5px 10px 5px 0px;
+}
+
+.absolute-panel-img{
+  width: 45px;
+}
+
+.vote-count-plot {
+  border: solid 1px grey;
+  border-radius: 10px;
+  padding: 5px;
+  margin-top: 15px
+}
