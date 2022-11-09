@@ -2,30 +2,34 @@ box::use(
   glue[
     glue
   ],
+  plotly[
+    event_data,
+    plotlyOutput,
+    renderPlotly,
+  ],
   shiny[
     absolutePanel,
     eventReactive,
     htmlOutput,
+    icon,
     isolate,
     moduleServer,
     NS,
     observeEvent,
+    plotOutput,
     reactive,
     reactiveVal,
+    renderPlot,
     renderUI,
     tags,
   ],
   shinyjs[
     js,
   ],
-  plotly[
-    event_data,
-    plotlyOutput,
-    renderPlotly,
+  spsComps[
+    bsPopover,
+    bsPop,
   ],
-  stats[
-    runif,
-  ]
 )
 
 box::use(
@@ -34,12 +38,14 @@ box::use(
 )
 
 plot_id <- "vote_plot"
+subplot_id <- "vote_subplot"
 
 #' export
 ui <- function(id, consts) {
   # namespace
   ns <- NS(id)
   vote_plot_id <- ns(plot_id)
+  vote_subplot_id <- ns(subplot_id)
 
   absolutePanel(
     id = "controls",
@@ -55,12 +61,36 @@ ui <- function(id, consts) {
     width = "fit-content",
     height = "fit-content",
 
-    htmlOutput(outputId = ns("header")),
-
     tags$div(
-      style = "border: solid 1px grey; border-radius: 10px; padding: 5px; margin-top: 15px",
-      class = "vote-count-plot",
-      plotlyOutput(outputId = vote_plot_id, height = "150px", width = "40vw")
+      htmlOutput(outputId = ns("header")),
+      tags$div(
+        class = "vote-count-plot",
+        tags$div(
+          style = "position: relative",
+          tags$div(
+            id = ns("vote_subplot_div"),
+            class = "vote-subplot-div",
+            icon(
+              name = "close",
+              class = "vote-subplot-icon",
+              onclick = glue("toggleSubplot('{ns('vote_subplot_div')}')")
+            ),
+            tags$h2("Vote counting", style = "margin: 0px"),
+            tags$p("Some explanation here...", style = "margin: 0px 5px 20px 5px;"),
+            tags$div(
+              style = "padding: 10px; border: solid 1px grey; border-radius: 10px;",
+              plotOutput(outputId = vote_subplot_id, width = 400, height = 200)
+            )
+          ),
+          tags$h5(
+            icon("plus-circle"),
+            "See all votes",
+            class = "vote-count-show-more",
+            onclick = glue("toggleSubplot('{ns('vote_subplot_div')}')")
+          )
+        ),
+        plotlyOutput(outputId = vote_plot_id, height = "150px", width = "40vw")
+      )
     )
   )
 }
@@ -80,6 +110,7 @@ server <- function(id, studies, consts) {
 
       return(ns)
     })
+
     # To allow smooth animation between data updates.
     frame_n <- reactiveVal(0)
     observeEvent(statistics(), {
@@ -94,41 +125,16 @@ server <- function(id, studies, consts) {
 
       # Header
       output$header <- renderUI({
-        html_code <- tags$div(
-          class = "absolute-panel-header",
-          tags$div(
-            class = "absolute-panel-fifty",
-            tags$div(
-              styles = "float: left;",
-              tags$h2(
-                "Vote-counting",
-                class = "absolute-panel-text"
-              ),
-              tags$p(
-                glue("# Votes: {statistics_df$n_votes}"),
-                style = "margin: 0px"
-              )
-            )
-          ),
-          tags$div(
-            class = "absolute-panel-fifty",
-            tags$div(
-              style = "display: flex; float: right; text-align: right;",
-              tags$h2(
-                mechanism,
-                class = "absolute-panel-text"
-              ),
-              tags$img(
-                src = mechanism_meta$icon,
-                class = "absolute-panel-img"
-              )
-            )
-          )
+        html_code <- utils$create_header(
+          mechanism = mechanism,
+          mechanism_icon = mechanism_meta$icon,
+          n_votes = statistics_df$n_votes
         )
 
         return(html_code)
       })
 
+      # Plot
       if (frame == 1) {
         output[[plot_id]] <- renderPlotly({
           utils$plot_vote_count(
@@ -146,6 +152,11 @@ server <- function(id, studies, consts) {
           frame = frame_n()
         )
       }
+
+      # Subplot
+      output[[subplot_id]] <- renderPlot({
+        utils$votes_barplot(data = statistics(), consts = consts)
+      }, bg = "transparent")
     }, ignoreNULL = TRUE)
   })
 }

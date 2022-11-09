@@ -1,12 +1,16 @@
 # packages and funcitons
 box::use(
   dplyr[...],
+  ggplot2[...],
+  ggtext[...],
   glue[...],
   htmltools[...],
   plotly[...],
   shiny[...],
   shinyjs[...],
+  stats[...],
   stringr[...],
+  tidyr[...],
   yaml[...],
 )
 
@@ -456,4 +460,59 @@ create_header <- function(mechanism, mechanism_icon, n_votes) {
       )
     )
   )
+}
+
+#' @title
+#' @description
+#'
+#' @param data
+#' @param consts
+#'
+#' @export
+votes_barplot <- function(data, consts) {
+  data <- data %>%
+    pivot_longer(cols = n_positive:n_ambiguous, values_to = "n") %>%
+    mutate(name = factor(x = name, levels = c("n_positive", "n_negative", "n_neutral", "n_ambiguous")))
+
+  icons <- sapply(X = consts$directions, FUN = "[[", "icon")
+  img_tags <- sapply(X = icons, FUN = function(x) sprintf("<img src = '%s' width = '50'/>", x))
+  labels <- setNames(
+    object = img_tags,
+    nm = c("n_positive", "n_negative", "n_neutral", "n_ambiguous")
+  )
+
+  g <- ggplot(data = data) +
+    geom_bar(
+      mapping = aes(x = rev(name), y = n, fill = name),
+      width = 0.4,
+      stat = "identity"
+    ) +
+    scale_x_discrete(name = NULL, labels = labels) +
+    scale_fill_manual(
+      values = c(
+        "n_positive" = consts$directions$positive$color,
+        "n_negative" = consts$directions$negative$color,
+        "n_neutral" = consts$directions$neutral$color,
+        "n_ambiguous" = consts$directions$ambiguous$color
+      )
+    ) +
+    annotate(
+      geom = "text",
+      x = rev(data$name),
+      y = data$n + 0.05*max(data$n),
+      label = data$n
+    ) +
+    coord_flip() +
+    theme_minimal() +
+    theme(
+      legend.position = "none",
+      axis.title = element_blank(),
+      axis.ticks = element_blank(),
+      axis.text.x  = element_blank(),
+      axis.text.y = element_markdown(color = "black", size = 7),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank()
+    )
+
+  return(g)
 }
