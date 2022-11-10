@@ -118,9 +118,20 @@ server <- function(id, studies, shp, consts) {
         # draw the map
         output$map <- renderLeaflet({
           leaflet(data = studies) %>%
+            leaflet::setMaxBounds(. ,-180, -90, 180, 90) %>%
             addProviderTiles(
               provider = "Esri.WorldGrayCanvas",
-              options = providerTileOptions(minZoom = 3, maxZoom = 10)
+              options = providerTileOptions(
+                minZoom = 3,
+                maxZoom = 10,
+                bounds = list(
+                  list(-90, -180),
+                  list(90, 180)
+                ),
+                noWrap = TRUE,
+                updateWhenZooming = FALSE,
+                updateWhenIdle = FALSE
+              )
             ) %>%
             addPolygons(
               color = ~pal(votes),
