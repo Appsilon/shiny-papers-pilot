@@ -489,6 +489,8 @@ plot_vote_count <- function(plot_id, votes, consts, first_frame) {
 #'
 #' @export
 update_vote_count <- function(session, plot_id, votes, frame) {
+  x_label <- glue("<extra></extra>{round(abs(votes)*100, 2)} %")
+
   plotlyProxy(
     outputId = plot_id,
     session = session,
@@ -505,6 +507,7 @@ update_vote_count <- function(session, plot_id, votes, frame) {
           ),
           list(
             x = rep(votes, 2),
+            hovertemplate = x_label,
             marker = list(color = set_line_color(votes)),
             frame = frame
           )
