@@ -134,6 +134,8 @@
   border-radius: 15px;
   transition: top ease 0.5s;
   box-shadow: 0 1px 3px 0 #bcbdbd, 0 0 0 1px #d4d4d5;
+  cursor: pointer;
+  opacity: 0.7;
 }
 
 .pathway-card:hover {
@@ -156,6 +158,12 @@
   left: 10%;
   width: 35%;
   filter: invert(1);
+}
+
+.pathway-info {
+ float: right;
+ margin: 3px;
+ color: white;
 }
 
 /* Glide */
@@ -243,4 +251,40 @@
   right: 15px;
   cursor: pointer;
   color: black;
+}
+
+/* popover */
+.popover {
+  background-color: white !important;
+  border: none !important;
+  border-radius: 15px !important;
+  box-shadow: 0 1px 3px 0 #bcbdbd, 0 0 0 1px #d4d4d5 !important;
+  margin: 10px auto !important;
+  max-width: unset !important;
+}
+
+.info-tooltip {
+  color: #444444;
+  padding: 0px 10px;
+}
+
+.left-margin {
+  margin-left: 5px;
+}
+
+.margin-bottom-five {
+  margin-bottom: 5px;
+}
+
+.no-margin {
+  margin: 0px;
+}
+
+.display-flex {
+  display: flex;
+}
+
+.hr-margin {
+  margin-top: 5px;
+  margin-bottom: 5px;
 }

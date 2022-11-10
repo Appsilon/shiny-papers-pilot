@@ -7,15 +7,23 @@ $(document).ready(function () {
 });
 
 function glideSelected(id, glideId) {
+  let cards = document.getElementsByClassName('pathway-card');
+  cards.forEach(function (e) {
+    if (e.id == id) {
+     e.style.opacity = 1;
+    } else {
+     e.style.opacity = 0.7;
+    }
+  });
+
   Shiny.setInputValue(glideId, id);
 }
 
 function toggleSubplot(id) {
-  var x = document.getElementById(id);
-  console.log(id);
-  if (x.style.display === "none") {
-    x.style.display = "block";
+  var e = document.getElementById(id);
+  if (e.style.display === 'none') {
+    e.style.display = 'block';
   } else {
-    x.style.display = "none";
+    e.style.display = 'none';
   }
 }

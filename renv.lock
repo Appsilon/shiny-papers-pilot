@@ -93,6 +93,13 @@
       "Repository": "CRAN",
       "Hash": "e8a22846fff485f0be3770c2da758713"
     },
+    "assertthat": {
+      "Package": "assertthat",
+      "Version": "0.2.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "50c838a310445e954bc13f26f26a6ecf"
+    },
     "backports": {
       "Package": "backports",
       "Version": "1.4.1",
@@ -737,12 +744,33 @@
       "Repository": "CRAN",
       "Hash": "fe12df67fdb3b1142325cc54f100cc06"
     },
+    "shinyAce": {
+      "Package": "shinyAce",
+      "Version": "0.4.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "99b2ee37c4f174539b1b0d920b00d16c"
+    },
+    "shinycssloaders": {
+      "Package": "shinycssloaders",
+      "Version": "1.0.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "f39bb3c44a9b496723ec7e86f9a771d8"
+    },
     "shinyjs": {
       "Package": "shinyjs",
       "Version": "2.1.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "802e4786b353a4bb27116957558548d5"
+    },
+    "shinytoastr": {
+      "Package": "shinytoastr",
+      "Version": "2.1.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "9e2768fd640e803d18ee95530939029e"
     },
     "sourcetools": {
       "Package": "sourcetools",
@@ -764,6 +792,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "f54dc80466103f49e76b448aa6b580c8"
+    },
+    "spsComps": {
+      "Package": "spsComps",
+      "Version": "0.3.2.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "d661dd768fda0c3e93853be61c44ed7c"
     },
     "stringi": {
       "Package": "stringi",
