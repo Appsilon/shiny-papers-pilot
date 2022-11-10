@@ -8,19 +8,25 @@ box::use(
     mutate,
   ],
   leaflet[
+    addLegend,
     addProviderTiles,
     addPolygons,
+    colorNumeric,
     leaflet,
     leafletOutput,
+    leafletProxy,
+    providerTileOptions,
     renderLeaflet,
-    setMaxBounds,
   ],
   sf[
     st_as_sf,
   ],
   shiny[
+    eventReactive,
     moduleServer,
     NS,
+    observeEvent,
+    reactiveVal,
   ],
 )
 
@@ -40,12 +46,22 @@ ui <- function(id) {
 #' @export
 server <- function(id, studies, shp, consts) {
   moduleServer(id, function(input, output, session) {
-    output$map <- renderLeaflet({
+    # leaflet objects
+    leaflet_objects <- eventReactive(session$userData$pathway(), {
       # get the current mechanism
       mechanism_sel <- session$userData$pathway()
 
       # removing entries without MPA
-      if (!mechanism_sel %in% studies$mechanism_internal) return(NULL)
+      if (!mechanism_sel %in% studies$mechanism_internal) {
+        leafletProxy(
+          mapId = "map",
+          session = session,
+          data = NULL
+        ) %>%
+          leaflet::clearShapes()
+
+        return(NULL)
+      }
 
       # summarise data for the specifc mechanism
       studies <- studies %>%
@@ -55,7 +71,6 @@ server <- function(id, studies, shp, consts) {
         mutate(
           label = utils$create_tooltip(
             consts = consts,
-            # name = name,
             mechanism = mechanism_internal,
             n_mpas = n_mpas,
             n_studies = n_studies,
@@ -70,34 +85,74 @@ server <- function(id, studies, shp, consts) {
             climate = climate,
             ecosystem = ecosystem
           ),
-          prop = if_else(
+          votes = if_else(
             condition = n_studies != n_ambiguous,
-            true = n_positive / (n_studies - n_ambiguous),
+            true = (n_positive - n_negative) / (n_votes),
             false = 0
           )
         )
 
       # draw the map
       base_color <- consts$pathways[[mechanism_sel]]$color
-      pal <- leaflet::colorNumeric(
-        palette = c("#FFFFFFFF", base_color),
-        domain = studies$prop
+      pal <- colorNumeric(
+        palette = c("#DC3220", "#005AB5"),
+        domain = studies$votes
       )
 
-      leaflet(data = studies) %>%
-        addProviderTiles(provider = "Esri.WorldGrayCanvas") %>%
-        addPolygons(
-          color = ~pal(prop),
-          weight = 0,
-          fillOpacity = 0.3,
-          popup = ~label
+      out <- list(studies = studies, pal = pal)
+      return(out)
+    })
+
+    frame_n <- reactiveVal(0)
+    observeEvent(leaflet_objects(), {
+      # collect objects
+      objs <- leaflet_objects()
+      studies <- objs$studies
+      pal <- objs$pal
+
+      # managing frames
+      frame_n(frame_n() + 1)
+      frame <- frame_n()
+
+      if (frame == 1) {
+        # draw the map
+        output$map <- renderLeaflet({
+          leaflet(data = studies) %>%
+            addProviderTiles(
+              provider = "Esri.WorldGrayCanvas",
+              options = providerTileOptions(minZoom = 3, maxZoom = 10)
+            ) %>%
+            addPolygons(
+              color = ~pal(votes),
+              weight = 0,
+              fillOpacity = 0.3,
+              popup = ~label
+            ) %>%
+            addLegend(
+              position = "bottomleft",
+              title = "Evidence",
+              bins = -1:1,
+              values = -1:1,
+              colors = pal(-1:1),
+              labels = c("Positive", "Neutral", "Negative"),
+              opacity = 1
+            )
+        })
+      } else {
+        # update the map
+        leafletProxy(
+          mapId = "map",
+          session = session,
+          data = studies
         ) %>%
-        setMaxBounds(
-          lng1 = -90,
-          lat1 = -180,
-          lng2 = 90,
-          lat2 = 180
-        )
+          leaflet::clearShapes() %>%
+          addPolygons(
+            color = ~pal(votes),
+            weight = 0,
+            fillOpacity = 0.3,
+            popup = ~label
+          )
+      }
     })
   })
 }

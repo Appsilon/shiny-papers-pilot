@@ -103,14 +103,24 @@
 
 .direction-div {
   text-align: center;
+  display: inline-flex;
+  position: relative;
+  box-shadow: 0 1px 3px 0 #bcbdbd, 0 0 0 1px #d4d4d5;
+  border-radius: 10px;
+  margin: 5px 20px;
 }
 
 .direction-icon {
-  width: 70px;
+  width: 30px;
+  position: absolute;
+  bottom: 5%;
+  right: 5%;
 }
 
 .direction-number {
-  font-size:; 15px;
+  font-size: 35px;
+  margin: auto;
+  padding: 10px;
 }
 
 /* Cards */
