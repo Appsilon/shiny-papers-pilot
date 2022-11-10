@@ -146,14 +146,14 @@ server <- function(id, studies, consts) {
       frame <- frame_n()
 
       statistics_df <- statistics()
-      mechanism_internal <- statistics_df$mechanism_internal
+      mechanism_internal <- session$userData$pathway()
       mechanism <- statistics_df$mechanism
       mechanism_meta <- consts$pathways[[mechanism_internal]]
 
       # Header
       output$header <- renderUI({
         html_code <- utils$create_header(
-          mechanism = mechanism,
+          mechanism = mechanism_meta$label,
           mechanism_icon = mechanism_meta$icon,
           n_votes = statistics_df$n_votes
         )
@@ -162,6 +162,7 @@ server <- function(id, studies, consts) {
       })
 
       # Plot
+      votes <- ifelse(test = is.nan(statistics_df$votes), yes = 0, no = statistics_df$votes)
       if (frame == 1) {
         output[[plot_id]] <- renderPlotly({
           utils$plot_vote_count(
@@ -175,7 +176,7 @@ server <- function(id, studies, consts) {
         utils$update_vote_count(
           session = session,
           plot_id = plot_id,
-          votes = statistics_df$votes,
+          votes = votes,
           frame = frame_n()
         )
       }
