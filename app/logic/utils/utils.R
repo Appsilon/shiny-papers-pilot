@@ -478,16 +478,17 @@ votes_barplot <- function(data, consts) {
   img_tags <- sapply(X = icons, FUN = function(x) sprintf("<img src = '%s' width = '50'/>", x))
   labels <- setNames(
     object = img_tags,
-    nm = c("n_positive", "n_negative", "n_neutral", "n_ambiguous")
+    nm = c("n_ambiguous", "n_negative", "n_neutral", "n_positive")
   )
+  data$icon <- labels[data$name]
 
   g <- ggplot(data = data) +
     geom_bar(
-      mapping = aes(x = rev(name), y = n, fill = name),
+      mapping = aes(x = name, y = n, fill = name),
       width = 0.4,
       stat = "identity"
     ) +
-    scale_x_discrete(name = NULL, labels = labels) +
+    scale_x_discrete(name = NULL, labels = data$icon, limits = rev) +
     scale_fill_manual(
       values = c(
         "n_positive" = consts$directions$positive$color,
@@ -498,7 +499,7 @@ votes_barplot <- function(data, consts) {
     ) +
     annotate(
       geom = "text",
-      x = rev(data$name),
+      x = data$name,
       y = data$n + 0.05*max(data$n),
       label = data$n
     ) +
@@ -509,7 +510,7 @@ votes_barplot <- function(data, consts) {
       axis.title = element_blank(),
       axis.ticks = element_blank(),
       axis.text.x  = element_blank(),
-      axis.text.y = element_markdown(color = "black", size = 7),
+      axis.text.y = element_markdown(),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank()
     )

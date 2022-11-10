@@ -23,12 +23,14 @@ box::use(
     renderUI,
     tags,
   ],
+  shinycssloaders[
+    withSpinner,
+  ],
   shinyjs[
     js,
-  ],
-  spsComps[
-    bsPopover,
-    bsPop,
+    hide,
+    hidden,
+    toggle,
   ],
 )
 
@@ -62,31 +64,39 @@ ui <- function(id, consts) {
     height = "fit-content",
 
     tags$div(
+      # header
       htmlOutput(outputId = ns("header")),
       tags$div(
         class = "vote-count-plot",
         tags$div(
           style = "position: relative",
-          tags$div(
-            id = ns("vote_subplot_div"),
-            class = "vote-subplot-div",
-            icon(
-              name = "close",
-              class = "vote-subplot-icon",
-              onclick = glue("toggleSubplot('{ns('vote_subplot_div')}')")
-            ),
-            tags$h2("Vote counting", style = "margin: 0px"),
-            tags$p("Some explanation here...", style = "margin: 0px 5px 20px 5px;"),
+          # tooltip
+          hidden(
             tags$div(
-              style = "padding: 10px; border: solid 1px grey; border-radius: 10px;",
-              plotOutput(outputId = vote_subplot_id, width = 400, height = 200)
+              id = ns("vote_subplot_div"),
+              class = "vote-subplot-div",
+              icon(
+                id = ns("vote_subplot_update_close"),
+                name = "close",
+                class = "action-button vote-subplot-icon"
+              ),
+              tags$h2("Vote counting", class = "popup-title"),
+              tags$p(consts$infos$vote_count, class = "popup-subtitle"),
+              tags$div(
+                class = "vote-count-plot",
+                withSpinner(
+                  ui_element = plotOutput(outputId = vote_subplot_id, width = 400, height = 200) ,
+                  type = 5
+                )
+              )
             )
           ),
+          # tooltip
           tags$h5(
+            id = ns("vote_subplot_update_toggle"),
             icon("plus-circle"),
             "See all votes",
-            class = "vote-count-show-more",
-            onclick = glue("toggleSubplot('{ns('vote_subplot_div')}')")
+            class = "action-button vote-count-show-more"
           )
         ),
         plotlyOutput(outputId = vote_plot_id, height = "150px", width = "40vw")
@@ -158,5 +168,15 @@ server <- function(id, studies, consts) {
         utils$votes_barplot(data = statistics(), consts = consts)
       }, bg = "transparent")
     }, ignoreNULL = TRUE)
+
+    # toogle popup
+    observeEvent(input$vote_subplot_update_toggle, {
+      toggle(id = "vote_subplot_div")
+    })
+
+    # close popup
+    observeEvent(input$vote_subplot_update_close, {
+      hide(id = "vote_subplot_div")
+    })
   })
 }

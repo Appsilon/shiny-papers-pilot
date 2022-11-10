@@ -1,3 +1,5 @@
+infos:
+  vote_count: "Number of studies reporting positive, negative, or neutral outcomes."
 directions:
   ambiguous:
     color: '#6FA8DC'

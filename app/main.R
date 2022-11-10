@@ -61,7 +61,7 @@ ui <- function(id) {
       class = "app-conteiner",
       pathways$ui(id = ns("pathways"), consts = constants),
       map$ui(id = ns("map")),
-      vote_count$ui(id = ns("vote_count"))
+      vote_count$ui(id = ns("vote_count"), consts = constants)
     )
   )
 }

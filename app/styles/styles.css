@@ -15,6 +15,10 @@
   margin: 0px;
 }
 
+.popup-subtitle {
+  margin: 0px 5px 20px 5px;
+}
+
 .flag {
   width: 50px;
   margin-right: 5px;
