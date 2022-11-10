@@ -31,7 +31,9 @@ ui <- function(id, consts) {
       definition = x$definition,
       indicator = x$indicator,
       unit = x$unit,
-      unit_type = x$unit_type
+      unit_type = x$unit_type,
+      width = "100px",
+      height = "100px"
     )
   })
 
