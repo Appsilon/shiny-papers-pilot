@@ -27,3 +27,17 @@ function toggleSubplot(id) {
     e.style.display = 'none';
   }
 }
+
+function updateCollapseIcon(id) {
+  var e = document.getElementById(id);
+
+  if (e.classList.contains('fa-plus')) {
+    e.classList.remove('fa-plus')
+    e.classList.add('fa-minus')
+  } else {
+    e.classList.remove('fa-minus')
+    e.classList.add('fa-plus')
+  }
+
+
+}

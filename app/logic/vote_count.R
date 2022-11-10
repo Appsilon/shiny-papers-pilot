@@ -64,42 +64,59 @@ ui <- function(id, consts) {
     height = "fit-content",
 
     tags$div(
-      # header
-      htmlOutput(outputId = ns("header")),
       tags$div(
-        class = "vote-count-plot",
+        # header
         tags$div(
-          style = "position: relative",
-          # tooltip
-          hidden(
-            tags$div(
-              id = ns("vote_subplot_div"),
-              class = "vote-subplot-div",
-              icon(
-                id = ns("vote_subplot_update_close"),
-                name = "close",
-                class = "action-button vote-subplot-icon"
-              ),
-              tags$h2("Vote counting", class = "popup-title"),
-              tags$p(consts$infos$vote_count, class = "popup-subtitle"),
-              tags$div(
-                class = "vote-count-plot",
-                withSpinner(
-                  ui_element = plotOutput(outputId = vote_subplot_id, width = 400, height = 200) ,
-                  type = 5
-                )
-              )
+          style = "width: 40vw;",
+          tags$div(
+            class = "collapse-div",
+            icon(
+              id = "collapse_button",
+              name = "minus",
+              `data-toggle` = "collapse",
+              `data-target` = "#demo",
+              class = "collapse-button",
+              onclick = "updateCollapseIcon('collapse_button')"
             )
           ),
-          # tooltip
-          tags$h5(
-            id = ns("vote_subplot_update_toggle"),
-            icon("plus-circle"),
-            "See all votes",
-            class = "action-button vote-count-show-more"
-          )
+          htmlOutput(outputId = ns("header"))
         ),
-        plotlyOutput(outputId = vote_plot_id, height = "150px", width = "40vw")
+        tags$div(
+          id = "demo",
+          class = "vote-count-plot collapse in",
+          tags$div(
+            style = "position: relative",
+            # tooltip
+            hidden(
+              tags$div(
+                id = ns("vote_subplot_div"),
+                class = "vote-subplot-div",
+                icon(
+                  id = ns("vote_subplot_update_close"),
+                  name = "close",
+                  class = "action-button vote-subplot-icon"
+                ),
+                tags$h2("Vote counting", class = "popup-title"),
+                tags$p(consts$infos$vote_count, class = "popup-subtitle"),
+                tags$div(
+                  class = "vote-count-plot",
+                  withSpinner(
+                    ui_element = plotOutput(outputId = vote_subplot_id, width = 400, height = 200) ,
+                    type = 5
+                  )
+                )
+              )
+            ),
+            # tooltip
+            tags$h5(
+              id = ns("vote_subplot_update_toggle"),
+              icon("plus-circle"),
+              "See all votes",
+              class = "action-button vote-count-show-more"
+            )
+          ),
+          plotlyOutput(outputId = vote_plot_id, height = "150px", width = "40vw")
+        )
       )
     )
   )

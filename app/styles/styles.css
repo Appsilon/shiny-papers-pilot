@@ -298,3 +298,17 @@
   margin-top: 5px;
   margin-bottom: 5px;
 }
+
+/* Collapse button */
+.collapse-div {
+  margin-bottom: 10px;
+  position: absolute;
+  top: 4%;
+  right: 2%;
+}
+
+.collapse-button {
+  float: right;
+  cursor: pointer;
+}
+
