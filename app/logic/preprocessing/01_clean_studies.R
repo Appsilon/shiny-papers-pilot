@@ -20,8 +20,12 @@ mechanisms_df <- data.frame(
 # MPAs? If so, do we know which MPAs?
 # For now, we might go by assuming that each study is about 1 MPA only.
 studies <- studies %>%
-  filter(!is.na(MPAname) & MPAname != "mix" & MPAname != "") %>%
   mutate(
+    MPAname = case_when(
+      MPAname == "mix" ~ NA_character_,
+      MPAname == "" ~ NA_character_,
+      TRUE ~ MPAname
+    ),
     country = str_to_title(country),
     climate = str_to_title(climate),
     continent = str_to_title(continent),
@@ -29,15 +33,18 @@ studies <- studies %>%
     ecosystem = str_to_title(ecosystem),
     mechanism = str_to_title(mechanism),
     country = case_when(
+      country == "Alaska" ~ "United States",
       country == "Bengladesh" ~ "Bangladesh",
       country == "Great Britain" ~ "United Kingdom",
+      country == "Guinea Bissau" ~ "United Kingdom",
       country == "Hawaii" ~ "United States",
       country == "Italia" ~ "Italy",
       country == "Netherland" ~ "Netherlands",
       country == "Phillipines" ~ "Philippines",
       country == "Puerto Rico" ~ "PR",
       country == "Saint Lucia" ~ "St Lucia",
-      country == "Timor Leste" ~ "East Timor",
+      country == "Taiwai" ~ "Taiwan",
+      country == "Timor Leste" ~ "Timor-Leste",
       country == "Tobago" ~ "Trinidad and Tobago",
       country == "Usa" ~ "United States",
       TRUE ~ country
@@ -48,6 +55,7 @@ studies <- studies %>%
       country == "Saint Martin" ~ "St Maarten",
       country == "Solomon Islands" ~ "Solomon",
       country == "Taiwan" ~ "TW",
+      country == "Timor-Leste" ~ "East Timor",
       country == "Trinidad and Tobago" ~ "Trinidad",
       country == "Turks And Caicos" ~ "Turks Caicos",
       country == "United Kingdom" ~ "UK",

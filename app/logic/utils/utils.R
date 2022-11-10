@@ -1,9 +1,16 @@
 # packages and funcitons
 box::use(
+  dplyr[...],
+  ggplot2[...],
+  ggtext[...],
   glue[...],
   htmltools[...],
+  plotly[...],
   shiny[...],
+  shinyjs[...],
+  stats[...],
   stringr[...],
+  tidyr[...],
   yaml[...],
 )
 
@@ -11,8 +18,8 @@ box::use(
 #' @description
 #'
 #' @param consts
-#' @param name
 #' @param mechanism
+#' @param n_mpas
 #' @param n_studies
 #' @param n_positive
 #' @param n_negative
@@ -27,8 +34,8 @@ box::use(
 #'
 #' @export
 create_tooltip <- function(
-    consts, name, mechanism,
-    n_studies, n_positive, n_negative, n_neutral, n_ambiguous,
+    consts, mechanism,
+    n_mpas, n_studies, n_positive, n_negative, n_neutral, n_ambiguous,
     country, flag, continent, ocean, climate, ecosystem
 ) {
   # get the metadata
@@ -37,39 +44,47 @@ create_tooltip <- function(
   # tooltip template
   tooltip_html <- glue(
     "
-    <!-- title: flag, country and MPA name -->
+    <!-- title: flag and country -->
     <h3 class = 'popup-title'>
       <img src = {flag} class = 'flag'></img>
-      {country} - <b>{name}</b>
+      {country}
     </h2>
 
     <hr>
 
     <!-- MPA information -->
-    <div class = 'grid-four'>
+    <div class = 'grid-four-text'>
       <div class = 'info-div'>
         <h4 class = 'info-title'>Continent:</h4>
       </div>
       <div class = 'info-div'>
-        <h4 class = 'info-content'>{continent}</h3>
+        <span class = 'info-content-hover' data-hover = '{continent}'>
+          <h4 class = 'info-content'>{continent}</h3>
+        </span>
       </div>
       <div class = 'info-div'>
         <h4 class = 'info-title'>Climate:</h4>
       </div>
       <div class = 'info-div'>
-        <h4 class = 'info-content'>{climate}</h3>
+        <span class = 'info-content-hover' data-hover = '{climate}'>
+          <h4 class = 'info-content'>{climate}</h3>
+        </span>
       </div>
       <div class = 'info-div'>
         <h4 class = 'info-title'>Ocean:</h4>
       </div>
       <div class = 'info-div'>
-        <h4 class = 'info-content'>{ocean}</h3>
+        <span class = 'info-content-hover' data-hover = '{ocean}'>
+          <h4 class = 'info-content'>{ocean}</h3>
+        </span>
       </div>
       <div class = 'info-div'>
         <h4 class = 'info-title'>Ecosystem:</h4>
       </div>
       <div class = 'info-div'>
-        <h4 class = 'info-content'>{ecosystem}</h3>
+        <span class = 'info-content-hover' data-hover = '{ecosystem}'>
+          <h4 class = 'info-content'>{ecosystem}</h3>
+        </span>
       </div>
     </div>
 
@@ -83,7 +98,7 @@ create_tooltip <- function(
 
     <!-- mechanism information -->
 
-    <div class = 'grid-four' style = 'margin-top: 20px'>
+    <div class = 'grid-four-img' style = 'margin-top: 20px'>
       <div class = 'direction-div'>
         <img src = 'https://i.ibb.co/Y2h1Jq5/positive.png' class = 'direction-icon'></img>
         <h5 class = 'direction-number'>{n_positive}</h5>
@@ -218,10 +233,36 @@ get_flag_link <- function(flag) {
 #'
 #' @export
 set_line_color <- function(val) {
-  case_when(
+  cases <- case_when(
     val > 0 ~ "green",
     val == 0 ~ "grey",
     TRUE ~ "red"
+  )
+
+  return(cases)
+}
+
+#' @title
+#' @description
+#'
+#' @param vote_plot_id
+#' @param ...
+#'
+#' @export
+insert_vote_count <- function(vote_plot_id, ...) {
+  tags$div(
+    extendShinyjs(
+      text = glue(
+        "
+        shinyjs.resetClick = function() {
+          Shiny.onInputChange('.clientValue-plotly_click-{{vote_plot_id}}', 'null');
+        }",
+        .open = "{{",
+        .close = "}}"
+      ),
+      functions = c("resetClick")
+    ),
+    ...
   )
 }
 
@@ -229,6 +270,7 @@ set_line_color <- function(val) {
 #' @description
 #'
 #' @param p
+#' @param consts
 #' @param ypos
 #' @param symbol
 #' @param size
@@ -238,24 +280,240 @@ set_line_color <- function(val) {
 #' @param frame
 #'
 #' @export
-add_animated_marker <- function(p, ypos = 0.01, symbol = "arrow-down", size = 20,
-                                color = "green", lwd = 1, lcol = "black", frame = 1) {
-  p %>%
+add_animated_marker <- function(
+    p,
+    xpos,
+    ypos = 0.01,
+    symbol = "arrow-down",
+    size = 20,
+    color = "green",
+    lwd = 1,
+    lcol = "black",
+    frame = 1
+) {
+  x_label <- glue("<extra></extra>{round(abs(xpos)*100, 2)} %")
+  p <- p %>%
     add_trace(
-    type = "scatter",
-    mode = "markers",
-    x = rep(constants$votes$init, 2),
-    y = ypos,
-    frame = frame,
-    hoverinfo = "none",
-    marker = list(
-      symbol = symbol,
-      size = size,
-      color = color,
+      type = "scatter",
+      mode = "markers",
+      x = rep(xpos, 2),
+      y = ypos,
+      frame = frame,
+      hovertemplate = x_label,
+      marker = list(
+        symbol = symbol,
+        size = size,
+        color = color,
+        line = list(
+          width = lwd,
+          color = lcol
+        )
+      )
+    )
+
+  return(p)
+}
+
+#' @title
+#' @description
+#'
+#' @param plot_id
+#' @param votes
+#' @param consts
+#' @param first_frame
+#'
+#' @export
+plot_vote_count <- function(plot_id, votes, consts, first_frame) {
+  p <- plot_ly(source = plot_id) %>%
+    add_trace(
+      x = c(0, votes, 0),
+      y = rep(0, 3),
+      frame = first_frame,
+      type = "scatter",
+      mode = "lines",
       line = list(
-        width = lwd,
-        color = lcol
+        border = "round",
+        width = 10,
+        simplify = FALSE,
+        color = set_line_color(votes)
+      )
+    ) %>%
+    add_animated_marker(
+      .,
+      xpos = votes,
+      ypos = 0,
+      size = 25,
+      symbol = "circle",
+      color = set_line_color(votes),
+      lwd = 2,
+      lcol = "white",
+      frame = first_frame
+    ) %>%
+    layout(
+      yaxis = list(
+        visible = FALSE,
+        fixedrange = TRUE,
+        range = list(-1, 1)
+      ),
+      xaxis = list(
+        zeroline = TRUE,
+        showline = FALSE,
+        showgrid = TRUE,
+        fixedrange = TRUE,
+        showticklabels = TRUE,
+        range = list(
+          consts$votes$min - 0.1,
+          consts$votes$max + 0.1
+        ),
+        ticktext = list(
+          "100%\nNegative Evidence",
+          "0\nEquivalent Evidence",
+          "100%\nPositive Evidence"
+        ),
+        tickvals = list(-1, 0, 1)
+      ),
+      showlegend = FALSE
+    ) %>%
+    animation_opts(
+      frame = 500,
+      transition = 500,
+      redraw = FALSE,
+      mode = "next"
+    ) %>%
+    config(displayModeBar = FALSE)
+
+  return(p)
+}
+
+#' @title
+#' @description
+#'
+#' @param session
+#' @param plot_id
+#' @param votes
+#' @param frame
+#'
+#' @export
+update_vote_count <- function(session, plot_id, votes, frame) {
+  plotlyProxy(
+    outputId = plot_id,
+    session = session,
+    deferUntilFlush = FALSE
+  ) %>%
+    plotlyProxyInvoke(
+      "animate",
+      list(
+        data = list(
+          list(
+            x = c(0, votes, 0),
+            frame = frame,
+            line = list(color = set_line_color(votes))
+          ),
+          list(
+            x = rep(votes, 2),
+            marker = list(color = set_line_color(votes)),
+            frame = frame
+          )
+        ),
+        traces = list(0, 1)
+      )
+    )
+}
+
+#' @title
+#' @description
+#'
+#' @param mechanism
+#' @param mechanism_icon
+#' @param n_votes
+#'
+#' @export
+create_header <- function(mechanism, mechanism_icon, n_votes) {
+  tags$div(
+    class = "absolute-panel-header",
+    tags$div(
+      class = "absolute-panel-fifty",
+      tags$div(
+        styles = "float: left;",
+        tags$h2(
+          "Vote-counting",
+          class = "absolute-panel-text"
+        ),
+        tags$p(
+          glue("# Votes: {n_votes}"),
+          style = "margin: 0px"
+        )
+      )
+    ),
+    tags$div(
+      class = "absolute-panel-fifty",
+      tags$div(
+        style = "display: flex; float: right; text-align: right;",
+        tags$h2(
+          mechanism,
+          class = "absolute-panel-text"
+        ),
+        tags$img(
+          src = mechanism_icon,
+          class = "absolute-panel-img"
+        )
       )
     )
   )
+}
+
+#' @title
+#' @description
+#'
+#' @param data
+#' @param consts
+#'
+#' @export
+votes_barplot <- function(data, consts) {
+  data <- data %>%
+    pivot_longer(cols = n_positive:n_ambiguous, values_to = "n") %>%
+    mutate(name = factor(x = name, levels = c("n_positive", "n_negative", "n_neutral", "n_ambiguous")))
+
+  icons <- sapply(X = consts$directions, FUN = "[[", "icon")
+  img_tags <- sapply(X = icons, FUN = function(x) sprintf("<img src = '%s' width = '50'/>", x))
+  labels <- setNames(
+    object = img_tags,
+    nm = c("n_ambiguous", "n_negative", "n_neutral", "n_positive")
+  )
+  data$icon <- labels[data$name]
+
+  g <- ggplot(data = data) +
+    geom_bar(
+      mapping = aes(x = name, y = n, fill = name),
+      width = 0.4,
+      stat = "identity"
+    ) +
+    scale_x_discrete(name = NULL, labels = data$icon, limits = rev) +
+    scale_fill_manual(
+      values = c(
+        "n_positive" = consts$directions$positive$color,
+        "n_negative" = consts$directions$negative$color,
+        "n_neutral" = consts$directions$neutral$color,
+        "n_ambiguous" = consts$directions$ambiguous$color
+      )
+    ) +
+    annotate(
+      geom = "text",
+      x = data$name,
+      y = data$n + 0.05*max(data$n),
+      label = data$n
+    ) +
+    coord_flip() +
+    theme_minimal() +
+    theme(
+      legend.position = "none",
+      axis.title = element_blank(),
+      axis.ticks = element_blank(),
+      axis.text.x  = element_blank(),
+      axis.text.y = element_markdown(),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank()
+    )
+
+  return(g)
 }

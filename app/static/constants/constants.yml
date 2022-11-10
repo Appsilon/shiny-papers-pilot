@@ -1,15 +1,17 @@
+infos:
+  vote_count: "Number of studies reporting positive, negative, or neutral outcomes."
 directions:
   ambiguous:
-    color: '#FFFFFF'
+    color: '#6FA8DC'
     icon: 'https://i.ibb.co/7WXs1wm/ambiguous.png'
   negative:
-    color: '#FFFFFF'
+    color: '#E06666'
     icon: 'https://i.ibb.co/N7HFXrH/negative.png'
   neutral:
-    color: '#FFFFFF'
+    color: '#FFD966'
     icon: 'https://i.ibb.co/jMy9LKs/neutral.png'
   positive:
-    color: '#FFFFFF'
+    color: '#B2D4A3'
     icon: 'https://i.ibb.co/Y2h1Jq5/positive.png'
 pathways:
   carbon_sequestration:

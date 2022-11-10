@@ -15,19 +15,28 @@
   margin: 0px;
 }
 
+.popup-subtitle {
+  margin: 0px 5px 20px 5px;
+}
+
 .flag {
-  width: 40px;
+  width: 50px;
   margin-right: 5px;
   vertical-align: text-top;
 }
 
-.grid-four {
+.grid-four-text {
+  display: grid;
+  grid-template-columns: auto 180px auto 180px;
+}
+
+.grid-four-img {
   display: grid;
   grid-template-columns: auto auto auto auto;
 }
 
 .info-div {
-  margin: 3px 0px 3px 15px;
+  margin: 3px 10px 3px 10px;
 }
 
 .info-title {
@@ -42,6 +51,34 @@
   margin: 0px;
   font-size: medium;
   line-height: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.info-content-hover {
+  position: relative;
+}
+
+.info-content-hover:before {
+  content: attr(data-hover);
+  width: fit-content;
+  visibility: hidden;
+  opacity: 0;
+  background-color: black;
+  color: #fff;
+  border-radius: 5px;
+  padding: 5px;
+  transition: opacity 1s ease-in-out;
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 110%;
+}
+
+.info-content-hover:hover:before {
+  opacity: 1;
+  visibility: visible;
 }
 
 .mechanism-div {
@@ -142,4 +179,68 @@
 .glide__arrows {
   margin-right: 10px;
   margin-left: 10px;
+}
+
+/* absolute panel */
+#controls {
+  background-color: white;
+  margin: 10px auto;
+  padding: 20px;
+  cursor: move;
+  opacity: 0.65;
+  transition: opacity 500ms 1s;
+  border-radius: 15px;
+}
+
+#controls:hover {
+  opacity: 0.95;
+  transition-delay: 0;
+}
+
+.absolute-panel-header {
+  display: flex;
+}
+
+.absolute-panel-fifty{
+  width: 50%;
+}
+
+.absolute-panel-text{
+  margin: 5px 10px 5px 0px;
+}
+
+.absolute-panel-img{
+  width: 45px;
+}
+
+.vote-count-plot {
+  border: solid 1px grey;
+  border-radius: 10px;
+  padding: 5px;
+  margin-top: 15px
+}
+
+.vote-count-show-more {
+  margin: 10px 5px;
+  cursor: pointer;
+}
+
+.vote-subplot-div {
+  width: fit-content;
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 1px 3px 0 #bcbdbd, 0 0 0 1px #d4d4d5;
+  margin: 10px auto;
+  padding: 20px;
+  position: absolute;
+  bottom: 30px;
+  left: 0;
+}
+
+.vote-subplot-icon {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  color: black;
 }

@@ -1,4 +1,7 @@
 box::use(
+  sf[
+    st_as_sf
+  ],
   shiny[
     fluidPage,
     includeCSS,
@@ -8,22 +11,29 @@ box::use(
     reactiveVal,
     tags,
   ],
+  shinyjs[
+    useShinyjs,
+  ],
   yaml[
     read_yaml,
   ],
 )
 
 box::use(
-  map = logic/mpa_map,
+  map = logic/map,
+  vote_count = logic/vote_count,
   pathways = logic/pathways_cards,
   utils_data = logic/utils/utils_data,
 )
 
 # get the data
 constants <- read_yaml(file = "app/static/constants/constants.yml")
-shp <- readRDS(file = "app/static/data/preprocessing/mpas_shp.RDS")
+# mpas_shp <- readRDS(file = "app/static/data/preprocessing/mpas_shp.RDS")
+countries_shp <- readRDS(file = "app/static/data/preprocessing/countries_shp.RDS")
+# mpas_shp <- st_as_sf(x = mpas_shp)
+countries_shp <- st_as_sf(x = countries_shp)
 studies <- readRDS(file = "app/static/data/preprocessing/studies.RDS")
-mpas <- utils_data$summarise_mpas(studies)
+studies <- utils_data$summarise_studies(studies)
 
 #' @export
 ui <- function(id) {
@@ -32,6 +42,9 @@ ui <- function(id) {
 
   # ui
   fluidPage(
+    # shinyjs
+    useShinyjs(),
+
     # glidejs
     tags$link(
       rel = "stylesheet",
@@ -47,7 +60,8 @@ ui <- function(id) {
     tags$div(
       class = "app-conteiner",
       pathways$ui(id = ns("pathways"), consts = constants),
-      map$ui(id = ns("map"))
+      map$ui(id = ns("map")),
+      vote_count$ui(id = ns("vote_count"), consts = constants)
     )
   )
 }
@@ -60,6 +74,16 @@ server <- function(id) {
 
     # modules
     pathways$server(id = "pathways")
-    map$server(id = "map", mpas = mpas, shp = shp, consts = constants)
+    map$server(
+      id = "map",
+      studies = studies,
+      shp = countries_shp,
+      consts = constants
+    )
+    vote_count$server(
+      id = "vote_count",
+      studies = studies,
+      consts = constants
+    )
   })
 }

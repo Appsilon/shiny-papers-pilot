@@ -3,6 +3,7 @@ box::use(
   dplyr[
     `%>%`,
     filter,
+    if_else,
     left_join,
     mutate,
   ],
@@ -37,24 +38,26 @@ ui <- function(id) {
 }
 
 #' @export
-server <- function(id, mpas, shp, consts) {
+server <- function(id, studies, shp, consts) {
   moduleServer(id, function(input, output, session) {
     output$map <- renderLeaflet({
       # get the current mechanism
       mechanism_sel <- session$userData$pathway()
 
-      if (!mechanism_sel %in% mpas$mechanism_internal) return(NULL)
+      # removing entries without MPA
+      if (!mechanism_sel %in% studies$mechanism_internal) return(NULL)
 
       # summarise data for the specifc mechanism
-      mpas <- mpas %>%
+      studies <- studies %>%
         filter(mechanism_internal == mechanism_sel) %>%
-        left_join(y = shp, by = "ID") %>%
+        left_join(y = shp, by = "country") %>%
         st_as_sf() %>%
         mutate(
           label = utils$create_tooltip(
             consts = consts,
-            name = name,
+            # name = name,
             mechanism = mechanism_internal,
+            n_mpas = n_mpas,
             n_studies = n_studies,
             n_positive = n_positive,
             n_negative = n_negative,
@@ -67,17 +70,21 @@ server <- function(id, mpas, shp, consts) {
             climate = climate,
             ecosystem = ecosystem
           ),
-          prop = n_positive / (n_studies - n_ambiguous)
+          prop = if_else(
+            condition = n_studies != n_ambiguous,
+            true = n_positive / (n_studies - n_ambiguous),
+            false = 0
+          )
         )
 
       # draw the map
       base_color <- consts$pathways[[mechanism_sel]]$color
       pal <- leaflet::colorNumeric(
         palette = c("#FFFFFFFF", base_color),
-        domain = mpas$prop
+        domain = studies$prop
       )
 
-      leaflet(data = mpas) %>%
+      leaflet(data = studies) %>%
         addProviderTiles(provider = "Esri.WorldGrayCanvas") %>%
         addPolygons(
           color = ~pal(prop),
