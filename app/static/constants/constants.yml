@@ -1,5 +1,5 @@
 infos:
-  vote_count: "Number of studies reporting positive, negative, or neutral outcomes."
+  vote_count: 'Number of studies reporting positive, negative, or neutral outcomes.'
 directions:
   ambiguous:
     color: '#6FA8DC'
@@ -19,81 +19,250 @@ pathways:
     icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
     label: 'Csequestration'
     id: 'carbon_sequestration'
+    definition: 'Ability to sequester carbon (> 100 years)'
+    indicator: 'Sequestered C'
+    unit: 'kg C area'
+    unit_type: 'continuous'
   acidity_buffering:
     color: '#769ec1'
     icon: 'https://cdn-icons-png.flaticon.com/512/3368/3368903.png'
     label: 'Ph'
     id: 'acidity_buffering'
+    definition: 'Ability to provide a local increase in pH'
+    indicator: 'Mean local pH'
+    unit: 'pH unit'
+    unit_type: 'continuous'
   phenotypic_plasticity:
     color: '#74b46a'
     icon: 'https://cdn-icons-png.flaticon.com/512/6167/6167446.png'
     label: 'Phenotypic Plasticity'
     id: 'phenotypic_plasticity'
+    definition: 'Ability to acclimate to changing conditions'
+    indicator: 'Range of metabolic, physiological, or morphological features'
+    unit: 'Range'
+    unit_type: 'continuous'
   connectivity:
     color: '#649b5d'
     icon: 'https://cdn-icons-png.flaticon.com/512/3891/3891839.png'
     label: 'Connectivity'
     id: 'connectivity'
+    definition: 'Exchanges of genes, organisms, nutrients between spatially distinct habitats'
+    indicator: 'Genetic connectivity'
+    unit: 'fixation index (FST)'
+    unit_type: 'continuous'
   stability:
     color: '#5c8e57'
     icon: 'https://cdn-icons-png.flaticon.com/512/31/31704.png'
     label: 'Stability'
     id: 'stability'
+    definition: 'Ability of an ecosystem to remain stable over time'
+    indicator: 'Temporal dissimilarity'
+    unit: 'Mean distance to centroid (nMDS metric), coefficient of variation (SD/mean)'
+    unit_type: 'continuous'
   biodiversity:
     color: '#52814f'
     icon: 'https://cdn-icons-png.flaticon.com/512/4993/4993111.png'
     label: 'Biodiversity'
     id: 'biodiversity'
+    definition: 'Diversity of species within an ecosystem'
+    indicator: [
+      'Species richness',
+      'Shannon index'
+    ]
+    unit: [
+      'Number of species observed',
+      'Shannon index'
+    ]
+    unit_type: [
+      'continuous',
+      'continuous'
+    ]
   genetic_diversity:
     color: '#487646'
     icon: 'https://cdn-icons-png.flaticon.com/512/3207/3207536.png'
     label: 'Genetic'
     id: 'genetic_diversity'
+    definition: 'Diversity of genes within a species'
+    indicator: [
+      'Allelic richness',
+      'Observed heterozygosity',
+      'Expected heterozygosity'
+    ]
+    unit: [
+      'Number of alleles at a loci',
+      '0 to 1',
+      '0 to 1'
+    ]
+    unit_type: [
+      'continuous',
+      'continuous',
+      'continuous'
+    ]
   body_condition:
     color: '#416940'
     icon: 'https://cdn-icons-png.flaticon.com/512/8033/8033755.png'
     label: 'Body Condition'
     id: 'body_condition'
+    definition: 'Health condition of individuals'
+    indicator: 'Health'
+    unit: 'Frequency of disease and bleaching'
+    unit_type: 'continuous'
   reproduction:
     color: '#375b35'
     icon: 'https://cdn-icons-png.flaticon.com/512/3611/3611169.png'
     label: 'Reproduction'
     id: 'reproduction'
+    definition: 'Ability of a population to produce offspring and to retain recruits'
+    indicator: [
+      'Reproductive output',
+      'recruitment'
+    ]
+    unit: [
+      'Larval or egg abundance, female fecundity',
+      'Recruits surface'
+    ]
+    unit_type: [
+      'continuous',
+      'continuous'
+    ]
   coastal_protection:
     color: '#2e4d2e'
     icon: 'https://cdn-icons-png.flaticon.com/512/185/185331.png'
     label: 'Coastal Protection'
     id: 'coastal_protection'
+    definition: 'Ability to protect the coastline and coastal inhabitants from waves and sea level rise'
+    indicator: [
+      'Accretion',
+      'Wave attenuation'
+    ]
+    unit: [
+      'cm year',
+      'wave energy or wave height'
+    ]
+    unit_type: [
+      'continuous',
+      'continuous'
+    ]
   assets:
     color: '#b9752d'
     icon: 'https://cdn-icons-png.flaticon.com/512/3118/3118007.png'
     label: 'Assets'
     id: 'assets'
+    definition: 'Ability to access financial and material goods'
+    indicator: [
+      'Material assets',
+      'Fishing cost',
+      'Employment',
+      'Income'
+    ]
+    unit: [
+      'Infrastructure or material goods',
+      '$ fisher trip',
+      'Number of employment opportunities',
+      '$ fisher month'
+    ]
+    unit_type: [
+      'binary',
+      'continuous',
+      'integer',
+      'continuous'
+    ]
   flexibility:
     color: '#c2832b'
     icon: 'https://cdn-icons-png.flaticon.com/512/2646/2646177.png'
     label: 'Flexibility'
     id: 'flexibility'
+    definition: 'Ability to switch between adaptation strategies'
+    indicator: 'Occupational diversity'
+    unit: 'Occupational diversity available to local communities'
+    unit_type: 'integer'
   social_organization:
     color: '#cb9531'
     icon: 'https://cdn-icons-png.flaticon.com/512/978/978012.png'
     label: 'Social Organization'
     id: 'social_organization'
+    definition: 'Ability of coastal communities to cooperate'
+    indicator: [
+      'cohesion',
+      'conflict'
+    ]
+    unit: [
+      'Sense of community belonging and solidarity',
+      'Tensions between local actors'
+    ]
+    unit_type: [
+      'binary',
+      'binary'
+    ]
   learning:
     color: '#d3a52f'
     icon: 'https://cdn-icons-png.flaticon.com/512/2883/2883662.png'
     label: 'Learning'
     id: 'learning'
+    definition: 'Ability to generate, absorb and process new information'
+    indicator: [
+      'Education',
+      'Research program',
+      'MPA knowledge',
+      'Environmental awareness'
+    ]
+    unit: [
+      'Attendance to school, highest degree',
+      'Presence of research programs promoted by the MPA',
+      'Awareness of local actors or visitors of MPA existence and regulations',
+      'Environmental sensitivity and knowledge'
+    ]
+    unit_type: [
+      'integer',
+      'binary',
+      'binary',
+      'binary'
+    ]
   agency:
     color: '#d9af32'
     icon: 'https://cdn-icons-png.flaticon.com/512/3439/3439398.png'
     label: 'Agency'
     id: 'agency'
+    definition: 'Ability to have free choice in responding to environmental change'
+    indicator: [
+      'User rights',
+      'Decision-making',
+      'Consultation',
+      'Participation'
+    ]
+    unit: [
+      'Increase or decrease of rights',
+      'Ability of local actors to influence decision-making',
+      'Consultation of local actors opinions',
+      'Involvement of local actors in management activities'
+    ]
+    unit_type: [
+      'binary',
+      'binary',
+      'binary',
+      'binary'
+    ]
   food_security:
     color: '#dfc03b'
     icon: 'https://cdn-icons-png.flaticon.com/512/3690/3690252.png'
     label: 'Food Security'
     id: 'food_security'
+    definition: 'Ability to access nutritious food'
+    indicator: [
+      'Local nutrition',
+      'Catch',
+      'Catch per unit effort'
+    ]
+    unit: [
+      'Quality, diversity and quantity of food intake by local inhabitants',
+      'kg year',
+      'kg hour fisher'
+    ]
+    unit_type: [
+      'continuous',
+      'continuous',
+      'continuous'
+    ]
 votes:
   min: -1
   max: 1

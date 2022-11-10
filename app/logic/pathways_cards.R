@@ -24,7 +24,11 @@ ui <- function(id, consts) {
       element_id = x$id,
       mechanism = x$label,
       color = x$color,
-      icon = x$icon
+      icon = x$icon,
+      definition = x$definition,
+      indicator = x$indicator,
+      unit = x$unit,
+      unit_type = x$unit_type
     )
   })
 

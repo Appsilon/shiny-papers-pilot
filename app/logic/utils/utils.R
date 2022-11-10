@@ -11,6 +11,7 @@ box::use(
   stats[...],
   stringr[...],
   tidyr[...],
+  spsComps[...],
   yaml[...],
 )
 
@@ -125,11 +126,78 @@ create_tooltip <- function(
 #' @title
 #' @description
 #'
+#' @param indicator
+#' @param unit
+#' @param unit_type
+#'
+#' @export
+indicator_info <- function(indicator, unit, unit_type) {
+  indicators <- mapply(
+    indicator,
+    unit,
+    unit_type,
+    FUN = function(x, y , z) {
+      glue(
+      "
+      <div class = 'display-flex'>
+        <h5 class = 'left-margin margin-bottom-five'><b>{indicator}:</b></h5>
+        <h5 class = 'left-margin'>{unit}</h5>
+        <h5 class = 'left-margin'><i>({unit_type})</i></h5>
+      </div>
+      "
+      )
+    }
+  )
+
+  indicators <- paste(indicators, collapse = "")
+
+  return(indicators)
+}
+
+#' @title
+#' @description
+#'
+#' @param mechanism
+#' @param definition
+#' @param indicator
+#' @param unit
+#' @param unit_type
+#'
+#' @export
+mechanism_info <- function(mechanism, definition, indicator, unit, unit_type) {
+  indicator_infos <- indicator_info(
+    indicator = indicator,
+    unit = unit,
+    unit_type = unit_type
+  )
+
+  info <- glue(
+  "
+  <div class = 'info-tooltip'>
+    <h3 class = 'margin-bottom-five'><b>{mechanism}</b></h3>
+    <h5 class = 'no-margin'>{definition}</h5>
+    <hr class = 'hr-margin'>
+    <h3 style = 'margin-bottom: 0px'>Indicators</h3>
+    {indicator_infos}
+  </div>
+  "
+  )
+
+  return(info)
+}
+
+#' @title
+#' @description
+#'
 #' @param glide_id
 #' @param element_id
 #' @param mechanism
 #' @param color
 #' @param icon
+#' @param definition
+#' @param indicator
+#' @param unit
+#' @param unit_type
 #' @param width
 #' @param height
 #'
@@ -140,10 +208,22 @@ mechanism_card <- function(
     mechanism,
     color,
     icon,
+    definition,
+    indicator,
+    unit,
+    unit_type,
     width = "100px",
     height = "85px"
 ) {
   mechanism <- toupper(x = mechanism)
+  mechanism_tooltip <- mechanism_info(
+    mechanism = mechanism,
+    definition = definition,
+    indicator = indicator,
+    unit = unit,
+    unit_type = unit_type
+  )
+  mechanism_tooltip <- gsub(pattern = "\n", replacement = "", x = mechanism_tooltip)
 
   out <- tags$a(
     class = "pathway-card",
@@ -152,6 +232,16 @@ mechanism_card <- function(
     tags$img(
       src = icon,
       class = "pathway-icon"
+    ),
+    bsPop(
+      tag = icon(
+        name = "circle-info",
+        class = "pathway-info"
+      ),
+      content = mechanism_tooltip,
+      placement = "bottom",
+      html = TRUE,
+      status = "info"
     ),
     tags$p(
       class = "pathway-title",
