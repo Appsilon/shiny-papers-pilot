@@ -140,9 +140,9 @@ indicator_info <- function(indicator, unit, unit_type) {
       glue(
       "
       <div class = 'display-flex'>
-        <h5 class = 'left-margin margin-bottom-five'><b>{indicator}:</b></h5>
-        <h5 class = 'left-margin'>{unit}</h5>
-        <h5 class = 'left-margin'><i>({unit_type})</i></h5>
+        <h5 class = 'left-margin margin-bottom-five'><b>{x}:</b></h5>
+        <h5 class = 'left-margin'>{y}</h5>
+        <h5 class = 'left-margin'><i>({z})</i></h5>
       </div>
       "
       )
@@ -227,6 +227,7 @@ mechanism_card <- function(
 
   out <- tags$a(
     class = "pathway-card",
+    id = element_id,
     style = glue("background: {color}; width: {width}; height: {height}"),
     onclick = glue("glideSelected('{element_id}', '{glide_id}')"),
     tags$img(
@@ -281,22 +282,25 @@ arrow_btn <- function(dir = "<", float = "left") {
 #'
 #' @export
 glide <- function(content) {
-  html_code <- tags$div(
-    class = "glide pathway-grid",
-    tags$div(
-      class = "glide-container",
-      arrow_btn(dir = "<", float = "left"),
+  html_code <-
+    absolutePanel(
+      fixed = TRUE,
+      draggable = TRUE,
+      class = "glide pathway-grid",
       tags$div(
-        `class` = "glide__track",
-        `data-glide-el` = "track",
-        tags$ul(
-          class = "glide__slides",
-          content
-        )
-      ),
-      arrow_btn(dir = ">", float = "right")
+        class = "glide-container",
+        arrow_btn(dir = "<", float = "left"),
+        tags$div(
+          `class` = "glide__track",
+          `data-glide-el` = "track",
+          tags$ul(
+            class = "glide__slides",
+            content
+          )
+        ),
+        arrow_btn(dir = ">", float = "right")
+      )
     )
-  )
 
   return(html_code)
 }

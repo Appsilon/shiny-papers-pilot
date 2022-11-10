@@ -1,5 +1,8 @@
 # packages and functions
 box::use(
+  glue[
+    glue
+  ],
   shiny[
     fluidPage,
     moduleServer,
@@ -37,8 +40,14 @@ ui <- function(id, consts) {
 }
 
 #' @export
-server <- function(id) {
+server <- function(id, consts) {
   moduleServer(id, function(input, output, session) {
+    # environment
+    ns <- session$ns
+
+    # select the first pathway
+    shinyjs::runjs(code = glue("glideSelected('{consts$pathways$carbon_sequestration$id}', '{ns('glide')}')"))
+
     # update selected pathway
     observeEvent(input$glide, {
       session$userData$pathway(input$glide)

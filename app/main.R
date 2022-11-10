@@ -73,7 +73,10 @@ server <- function(id) {
     session$userData$pathway <- reactiveVal("carbon_sequestration")
 
     # modules
-    pathways$server(id = "pathways")
+    pathways$server(
+      id = "pathways",
+      consts = constants
+    )
     map$server(
       id = "map",
       studies = studies,
