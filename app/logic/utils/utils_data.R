@@ -70,7 +70,7 @@ summarise_mechanism <- function(studies, mechanism) {
       n_ambiguous = sum(n_ambiguous)
     ) %>%
     mutate(
-      votes = (n_positive - n_negative)/(n_positive + n_negative)
+      votes = (n_positive - n_negative)/(n_votes)
     )
 
   return(ns)
