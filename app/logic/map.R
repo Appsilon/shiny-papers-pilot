@@ -131,9 +131,9 @@ server <- function(id, studies, shp, consts) {
             addLegend(
               position = "bottomleft",
               title = "Evidence",
-              bins = -1:1,
-              values = -1:1,
-              colors = pal(-1:1),
+              bins = 1:-1,
+              values = 1:-1,
+              colors = pal(1:-1),
               labels = c("Positive", "Neutral", "Negative"),
               opacity = 1
             )
