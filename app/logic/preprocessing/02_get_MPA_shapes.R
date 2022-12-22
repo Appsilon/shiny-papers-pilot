@@ -7,15 +7,22 @@ library(spData)
 # get MPAs in use in our paper
 studies <- readRDS(file = "app/static/data/preprocessing/studies.RDS")
 
+# Get authors' shp files for all geometries in the article
+shp_mitigation <- st_read(dsn = "app/static/data/originals/locations_mitigation.shp") %>%
+  rename(MPA = "location", nb_studies = "nb.studies")
+shp_adaptation <- st_read(dsn = "app/static/data/originals/locations_adaptation.shp") %>%
+  rename(mecanism = "Mecanism", ID = "id")
+
+shp_all <- bind_rows(shp_mitigation, shp_adaptation)
+shp_all %>% as_tibble() %>% count(MPA, mecanism) %>% filter(n > 1)
+
 # read shape files and filter by our MPAs
 # shape files can be downloaded at https://www.protectedplanet.net/en
-# shp1 <- st_read(dsn = "app/static/data/shp/WDPA_WDOECM_nov2022_Public_all_shp/polygons/1/WDPA_WDOECM_Nov2022_Public_all_shp-polygons.shp") # nolint
-# shp2 <- st_read(dsn = "app/static/data/shp/WDPA_WDOECM_nov2022_Public_all_shp/polygons/2/WDPA_WDOECM_Nov2022_Public_all_shp-polygons.shp") # nolint
-# shp3 <- st_read(dsn = "app/static/data/shp/WDPA_WDOECM_nov2022_Public_all_shp/polygons/3/WDPA_WDOECM_Nov2022_Public_all_shp-polygons.shp") # nolint
 #
 # shp <- bind_rows(shp1, shp2, shp3)
 # rm("shp1", "shp2", "shp3")
 # gc(reset = TRUE)
+
 
 # TODO: Using country instead of MPA
 studies <- studies %>%
