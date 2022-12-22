@@ -3,6 +3,7 @@ library(dplyr)
 library(stringr)
 
 source("app/logic/utils/utils.R")
+source("app/logic/utils/utils_data.R")
 
 # get the data
 # TODO: my guess is that we have a different file with more complete info:
@@ -15,10 +16,14 @@ mechanisms_df <- data.frame(
   mechanism_internal = names(mechanisms)
 )
 
+# treating pathways independently
+studies <- lapply(X = constants$pathways, FUN = clean_pathway)
+
+# combine files
+studies <- lapply(X = studies, FUN = read_csv_wrap) %>%
+  bind_rows()
+
 # summarize important variables
-# TODO: check what "mix" means for MPAname...are these studies spanning several
-# MPAs? If so, do we know which MPAs?
-# For now, we might go by assuming that each study is about 1 MPA only.
 studies <- studies %>%
   mutate(
     MPAname = case_when(
@@ -73,8 +78,8 @@ studies <- studies %>%
   rename(name = MPAname) %>%
   filter(!is.na(mechanism_internal))
 
-# TODO: It seems that "Phenotypic plasticity" and "Connectivity" mechanisms are not on the data
-# But there are 2 mechanism in the data that are absent in the paper: "Recovery" and "Resistance".
-
 # save data
-saveRDS(object = studies, file = "app/static/data/preprocessing/studies.RDS")
+saveRDS(
+  object = studies,
+  file = "app/static/data/preprocessing/studies.RDS"
+)
