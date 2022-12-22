@@ -16,6 +16,9 @@ directions:
 pathways:
   carbon_sequestration:
     color: '#3b4495'
+    file_in: 'app/static/data/originals/cseq_screened.csv'
+    file: 'app/static/data/preprocessing/pathways/carbon_sequestration.csv'
+    filter: null
     icon: 'https://cdn-icons-png.flaticon.com/512/3740/3740331.png'
     label: 'Csequestration'
     id: 'carbon_sequestration'
@@ -25,6 +28,9 @@ pathways:
     unit_type: 'continuous'
   acidity_buffering:
     color: '#769ec1'
+    file_in: 'app/static/data/originals/ph_buffering.csv'
+    file: 'app/static/data/preprocessing/pathways/acidity_buffering.csv'
+    filter: null
     icon: 'https://cdn-icons-png.flaticon.com/512/3368/3368903.png'
     label: 'Ph'
     id: 'acidity_buffering'
@@ -34,6 +40,9 @@ pathways:
     unit_type: 'continuous'
   stability:
     color: '#5c8e57'
+    file_in: 'app/static/data/originals/variability.csv'
+    file: 'app/static/data/preprocessing/pathways/stability.csv'
+    filter: null
     icon: 'https://cdn-icons-png.flaticon.com/512/31/31704.png'
     label: 'Stability'
     id: 'stability'
@@ -43,6 +52,9 @@ pathways:
     unit_type: 'continuous'
   biodiversity:
     color: '#52814f'
+    file_in: 'app/static/data/originals/biodiversity.csv'
+    file: 'app/static/data/preprocessing/pathways/biodiversity.csv'
+    filter: null
     icon: 'https://cdn-icons-png.flaticon.com/512/4993/4993111.png'
     label: 'Biodiversity'
     id: 'biodiversity'
@@ -61,6 +73,9 @@ pathways:
     ]
   genetic_diversity:
     color: '#487646'
+    file_in: 'app/static/data/originals/genetic.csv'
+    file: 'app/static/data/preprocessing/pathways/genetic_diversity.csv'
+    filter: null
     icon: 'https://cdn-icons-png.flaticon.com/512/3207/3207536.png'
     label: 'Genetic'
     id: 'genetic_diversity'
@@ -82,6 +97,9 @@ pathways:
     ]
   body_condition:
     color: '#416940'
+    file_in: 'app/static/data/originals/resilience.csv'
+    file: 'app/static/data/preprocessing/pathways/body_condition.csv'
+    filter: 'indicator == "health degradation"'
     icon: 'https://cdn-icons-png.flaticon.com/512/8033/8033755.png'
     label: 'Body Condition'
     id: 'body_condition'
@@ -91,6 +109,9 @@ pathways:
     unit_type: 'continuous'
   reproduction:
     color: '#375b35'
+    file_in: 'app/static/data/originals/reproduction.csv'
+    file: 'app/static/data/preprocessing/pathways/reproduction.csv'
+    filter: null
     icon: 'https://cdn-icons-png.flaticon.com/512/3611/3611169.png'
     label: 'Reproduction'
     id: 'reproduction'
@@ -109,6 +130,9 @@ pathways:
     ]
   coastal_protection:
     color: '#2e4d2e'
+    file_in: 'app/static/data/originals/coast_protection.csv'
+    file: 'app/static/data/preprocessing/pathways/coastal_protection.csv'
+    filter: null
     icon: 'https://cdn-icons-png.flaticon.com/512/185/185331.png'
     label: 'Coastal Protection'
     id: 'coastal_protection'
@@ -127,6 +151,9 @@ pathways:
     ]
   assets:
     color: '#b9752d'
+    file_in: 'app/static/data/originals/social.csv'
+    file: 'app/static/data/preprocessing/pathways/assets.csv'
+    filter: 'mechanism == "assets"'
     icon: 'https://cdn-icons-png.flaticon.com/512/3118/3118007.png'
     label: 'Assets'
     id: 'assets'
@@ -151,6 +178,9 @@ pathways:
     ]
   flexibility:
     color: '#c2832b'
+    file_in: 'app/static/data/originals/social.csv'
+    file: 'app/static/data/preprocessing/pathways/flexibility.csv'
+    filter: 'mechanism == "flexibility"'
     icon: 'https://cdn-icons-png.flaticon.com/512/2646/2646177.png'
     label: 'Flexibility'
     id: 'flexibility'
@@ -160,6 +190,9 @@ pathways:
     unit_type: 'integer'
   social_organization:
     color: '#cb9531'
+    file_in: 'app/static/data/originals/social.csv'
+    file: 'app/static/data/preprocessing/pathways/social_organization.csv'
+    filter: 'mechanism == "social organization"'
     icon: 'https://cdn-icons-png.flaticon.com/512/978/978012.png'
     label: 'Social Organization'
     id: 'social_organization'
@@ -178,6 +211,9 @@ pathways:
     ]
   learning:
     color: '#d3a52f'
+    file_in: 'app/static/data/originals/social.csv'
+    file: 'app/static/data/preprocessing/pathways/learning.csv'
+    filter: 'mechanism == "information"'
     icon: 'https://cdn-icons-png.flaticon.com/512/2883/2883662.png'
     label: 'Learning'
     id: 'learning'
@@ -202,6 +238,9 @@ pathways:
     ]
   agency:
     color: '#d9af32'
+    file_in: 'app/static/data/originals/social.csv'
+    file: 'app/static/data/preprocessing/pathways/agency.csv'
+    filter: 'mechanism == "agency"'
     icon: 'https://cdn-icons-png.flaticon.com/512/3439/3439398.png'
     label: 'Agency'
     id: 'agency'
@@ -226,6 +265,9 @@ pathways:
     ]
   food_security:
     color: '#dfc03b'
+    file_in: 'app/static/data/originals/social.csv'
+    file: 'app/static/data/preprocessing/pathways/food_security.csv'
+    filter: 'mechanism == "food security"'
     icon: 'https://cdn-icons-png.flaticon.com/512/3690/3690252.png'
     label: 'Food Security'
     id: 'food_security'
