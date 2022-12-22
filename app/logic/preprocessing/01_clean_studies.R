@@ -77,7 +77,8 @@ studies <- studies %>%
   ) %>%
   left_join(y = mechanisms_df, by = "mechanism") %>%
   rename(name = MPAname) %>%
-  filter(!is.na(mechanism_internal))
+  filter(!is.na(mechanism_internal)) %>%
+  filter(OUTtext == "in")
 
 # save data
 saveRDS(
