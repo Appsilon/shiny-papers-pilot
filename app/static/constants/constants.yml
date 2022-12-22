@@ -291,3 +291,7 @@ votes:
   min: -1
   max: 1
   init: 0
+  colors:
+    positive: "#4CBB17"
+    neutral: "gray"
+    negative: "#FF2400"

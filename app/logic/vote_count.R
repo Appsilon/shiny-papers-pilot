@@ -177,7 +177,8 @@ server <- function(id, studies, consts) {
           session = session,
           plot_id = plot_id,
           votes = votes,
-          frame = frame_n()
+          frame = frame_n(),
+          consts = consts
         )
       }
 

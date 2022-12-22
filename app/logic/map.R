@@ -95,7 +95,11 @@ server <- function(id, studies, shp, consts) {
       # draw the map
       base_color <- consts$pathways[[mechanism_sel]]$color
       pal <- colorNumeric(
-        palette = c("#DC3220", "#005AB5"),
+        palette = c(
+          consts$votes$colors$negative,
+          consts$votes$colors$neutral,
+          consts$votes$colors$positive
+        ),
         domain = studies$votes
       )
 

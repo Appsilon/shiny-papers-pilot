@@ -326,11 +326,11 @@ get_flag_link <- function(flag) {
 #' @param val
 #'
 #' @export
-set_line_color <- function(val) {
+set_line_color <- function(val, consts) {
   cases <- case_when(
-    val > 0 ~ "green",
-    val == 0 ~ "grey",
-    TRUE ~ "red"
+    val > 0 ~ consts$votes$colors$positive,
+    val == 0 ~ consts$votes$colors$neutral,
+    TRUE ~ consts$votes$colors$negative
   )
 
   return(cases)
@@ -429,7 +429,7 @@ plot_vote_count <- function(plot_id, votes, consts, first_frame) {
         border = "round",
         width = 10,
         simplify = FALSE,
-        color = set_line_color(votes)
+        color = set_line_color(votes, consts)
       )
     ) %>%
     add_animated_marker(
@@ -438,7 +438,7 @@ plot_vote_count <- function(plot_id, votes, consts, first_frame) {
       ypos = 0,
       size = 25,
       symbol = "circle",
-      color = set_line_color(votes),
+      color = set_line_color(votes, consts),
       lwd = 2,
       lcol = "white",
       frame = first_frame
@@ -488,7 +488,7 @@ plot_vote_count <- function(plot_id, votes, consts, first_frame) {
 #' @param frame
 #'
 #' @export
-update_vote_count <- function(session, plot_id, votes, frame) {
+update_vote_count <- function(session, plot_id, votes, frame, consts) {
   x_label <- glue("<extra></extra>{round(abs(votes)*100, 2)} %")
 
   plotlyProxy(
@@ -503,12 +503,12 @@ update_vote_count <- function(session, plot_id, votes, frame) {
           list(
             x = c(0, votes, 0),
             frame = frame,
-            line = list(color = set_line_color(votes))
+            line = list(color = set_line_color(votes, consts))
           ),
           list(
             x = rep(votes, 2),
             hovertemplate = x_label,
-            marker = list(color = set_line_color(votes)),
+            marker = list(color = set_line_color(votes, consts)),
             frame = frame
           )
         ),
