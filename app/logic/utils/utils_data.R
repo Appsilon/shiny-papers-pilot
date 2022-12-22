@@ -34,7 +34,7 @@ summarise_studies <- function(studies) {
     summarise(
       flag = first(flag),
       n_mpas = n_distinct(name),
-      n_studies = n_distinct(ID),
+      n_studies = n_distinct(ID_study),
       n_votes = n(),
       n_positive = sum(direction == "positive"),
       n_negative = sum(direction == "negative"),

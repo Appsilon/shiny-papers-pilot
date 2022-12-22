@@ -72,6 +72,7 @@ studies <- studies %>%
       direction == "positive " ~ "positive",
       TRUE ~ direction
     ),
+    ID_study = ID,
     ID = as.numeric(as.factor(x = MPAname))
   ) %>%
   left_join(y = mechanisms_df, by = "mechanism") %>%
